@@ -1,4 +1,3 @@
-
 import java.rmi.*;
 
 public interface Download extends Remote {
