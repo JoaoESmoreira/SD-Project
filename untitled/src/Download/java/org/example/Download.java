@@ -1,3 +1,4 @@
+
 package org.example;
 
 import org.jsoup.Jsoup;
@@ -8,10 +9,11 @@ import org.jsoup.select.Elements;
 import java.io.IOException;
 import java.util.StringTokenizer;
 
-public class Main {
+public class Download {
 
     public static void main(String[] args) {
-        String url = "https://pedror.dev";
+        String url = "https://en.wikipedia.org/wiki/Castelo_de_Sines";
+
 
         try {
             Document doc = Jsoup.connect(url).get();
