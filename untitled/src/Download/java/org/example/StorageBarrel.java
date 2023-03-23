@@ -1,4 +1,4 @@
-//package src.Download.java.org.example;
+package org.example;//package src.Download.java.org.example;
 
 import java.rmi.*;
 import java.rmi.registry.LocateRegistry;

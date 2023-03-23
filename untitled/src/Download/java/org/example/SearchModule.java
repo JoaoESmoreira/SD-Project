@@ -1,3 +1,7 @@
+package org.example;
+
+import org.example.Binterface;
+
 import java.net.MalformedURLException;
 import java.rmi.*;
 import java.rmi.registry.LocateRegistry;
@@ -5,7 +9,7 @@ import java.rmi.registry.Registry;
 import java.rmi.server.*;
 
 
-public class SearchModule extends UnicastRemoteObject implements Inter{
+public class SearchModule extends UnicastRemoteObject implements Inter {
 
 	private Binterface c;
 

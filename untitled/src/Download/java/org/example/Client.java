@@ -1,3 +1,4 @@
+package org.example;
 
 import java.rmi.registry.LocateRegistry;
 import java.util.Scanner;
