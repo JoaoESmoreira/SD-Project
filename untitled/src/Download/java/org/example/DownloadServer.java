@@ -1,91 +1,90 @@
+// import java.rmi.*;
+// import java.rmi.registry.LocateRegistry;
+// import java.rmi.registry.Registry;
+// import java.rmi.server.*;
+import java.util.ArrayList;
+import java.util.concurrent.ConcurrentLinkedQueue;
 
-/*package org.example;
-
-public class DownloadServer {
-
-    public static void main(String[] args) {
-        String url = "https://en.wikipedia.org/wiki/Castelo_de_Sines";
-
-
-        try {
-            Document doc = Jsoup.connect(url).get();
-            StringTokenizer tokens = new StringTokenizer(doc.text());
-            int countTokens = 0;
-
-            while (tokens.hasMoreElements() && countTokens++ < 100)
-                System.out.println(tokens.nextToken().toLowerCase());
-
-            Elements links = doc.select("a[href]");
-
-            for (Element link : links)
-                System.out.println(link.text() + "\n" + link.attr("abs:href") + "\n");
-
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
-}*/
+import org.example.Reader;
+import org.example.Url;
 
 
+public class DownloadServer /*extends UnicastRemoteObject implements Download*/ {
+    static ConcurrentLinkedQueue<String> urlQueue;
 
-import java.rmi.*;
-import java.rmi.registry.LocateRegistry;
-import java.rmi.registry.Registry;
-import java.rmi.server.*;
-import java.util.concurrent.SynchronousQueue;
-
-import org.jsoup.Jsoup;
-import org.jsoup.nodes.Document;
-import org.jsoup.nodes.Element;
-import org.jsoup.select.Elements;
-
-import java.io.IOException;
-import java.util.StringTokenizer;
-public class DownloadServer extends UnicastRemoteObject implements Download {
-    static SynchronousQueue<String> urlQueue;
-
-    public DownloadServer() throws RemoteException {
+    public DownloadServer() /*throws RemoteException*/ {
         super();
-        urlQueue = new SynchronousQueue<>();
+        urlQueue = new ConcurrentLinkedQueue<>();
     }
 
-    public String debug() throws RemoteException {
+    /*public String debug() throws RemoteException {
         System.out.println("Working on server!");
 
         return "Hello, World!";
     }
 
-    // =========================================================
-    public static void main(String[] args) {
-        // Registry and Bind server
+    public static void getLinks(String url) {
         try {
+            if (url != null)
+            {
+                Document doc = Jsoup.connect(url).get();
+                // StringTokenizer tokens = new StringTokenizer(doc.text());
+
+                // int countTokens = 0;
+                // while (tokens.hasMoreElements() && countTokens++ < 100)
+                //     System.out.println(tokens.nextToken().toLowerCase());
+                // System.out.println("\n\n");
+
+                Elements links = doc.select("a[href]");
+
+                for (Element link : links)
+                    urlQueue.add(link.attr("abs:href"));
+            }
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }*/
+
+    public static void main(String[] args) throws InterruptedException {
+        // Registry and Bind server
+        /*try {
             DownloadServer server = new DownloadServer();
             Registry r = LocateRegistry.createRegistry(7000);
             r.rebind("DownloadNameServer", server);
             System.out.println("Server ready.");
         } catch (RemoteException re) {
-            System.out.println("Exception in HelloImpl.main: " + re);
+            System.out.println("Exception in ServerImpl.main: " + re);
+        }*/
+
+        System.out.println("Starting");
+        Url url = new Url();
+
+        ArrayList<Reader> readers = new ArrayList<>();
+        for (int id = 0; id < 300; id += 1) {
+            Reader reader = new Reader(url, id);
+            readers.add(reader);
         }
 
-        urlQueue.add("https://en.wikipedia.org/wiki/Castelo_de_Sines");
+        for (Reader reader:readers)
+            reader.start();
 
         try {
-            String url = urlQueue.;
-            Document doc = Jsoup.connect(url).get();
-            StringTokenizer tokens = new StringTokenizer(doc.text());
-            int countTokens = 0;
-
-            while (tokens.hasMoreElements() && countTokens++ < 100)
-                System.out.println(tokens.nextToken().toLowerCase());
-
-            Elements links = doc.select("a[href]");
-
-            for (Element link : links)
-                System.out.println(link.text() + "\n" + link.attr("abs:href") + "\n");
-
-        } catch (IOException e) {
-            e.printStackTrace();
+            Thread.sleep(2000);
+        } catch (InterruptedException e) {
+            throw new RuntimeException(e);
         }
-    }
+        url.addUrl("https://en.wikipedia.org/wiki/Penafiel");
 
+        // this is a test to add another url
+        try {
+            Thread.sleep(18000);
+        } catch (InterruptedException e) {
+            throw new RuntimeException(e);
+        }
+        System.out.println("============================================================");
+        url.addUrl("https://docs.oracle.com/en/java/javase/19/docs/api/java.base/java/util/Queue.html#remove()");
+
+        System.out.println(url.urlSet.size());
+    }
 }
