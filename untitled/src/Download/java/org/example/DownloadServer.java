@@ -7,55 +7,41 @@ import java.util.concurrent.ConcurrentLinkedQueue;
 
 import org.example.Reader;
 import org.example.Url;
+import src.Download.java.org.example.Download;
+
+import java.rmi.*;
+import java.rmi.registry.LocateRegistry;
+import java.rmi.registry.Registry;
+import java.rmi.server.*;
 
 
-public class DownloadServer /*extends UnicastRemoteObject implements Download*/ {
+public class DownloadServer extends UnicastRemoteObject implements Download {
     static ConcurrentLinkedQueue<String> urlQueue;
 
-    public DownloadServer() /*throws RemoteException*/ {
+    public DownloadServer() throws RemoteException {
         super();
         urlQueue = new ConcurrentLinkedQueue<>();
     }
 
-    /*public String debug() throws RemoteException {
-        System.out.println("Working on server!");
+    public void GetURL(String s) throws RemoteException {
+        System.out.println("Got the URL: "+s);
 
-        return "Hello, World!";
+        //url.addUrl(s);
     }
 
-    public static void getLinks(String url) {
-        try {
-            if (url != null)
-            {
-                Document doc = Jsoup.connect(url).get();
-                // StringTokenizer tokens = new StringTokenizer(doc.text());
 
-                // int countTokens = 0;
-                // while (tokens.hasMoreElements() && countTokens++ < 100)
-                //     System.out.println(tokens.nextToken().toLowerCase());
-                // System.out.println("\n\n");
-
-                Elements links = doc.select("a[href]");
-
-                for (Element link : links)
-                    urlQueue.add(link.attr("abs:href"));
-            }
-
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }*/
 
     public static void main(String[] args) throws InterruptedException {
         // Registry and Bind server
-        /*try {
+        try {
+
             DownloadServer server = new DownloadServer();
-            Registry r = LocateRegistry.createRegistry(7000);
+            Registry r = LocateRegistry.createRegistry(8000);
             r.rebind("DownloadNameServer", server);
             System.out.println("Server ready.");
         } catch (RemoteException re) {
             System.out.println("Exception in ServerImpl.main: " + re);
-        }*/
+        }
 
         System.out.println("Starting");
         Url url = new Url();

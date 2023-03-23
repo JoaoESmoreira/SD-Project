@@ -7,10 +7,10 @@ public class DownloadClient {
 
         try {
 
-            Download downloader = (Download) LocateRegistry.getRegistry(7000).lookup("DownloadNameServer");
+            //Download downloader = (Download) LocateRegistry.getRegistry(7000).lookup("DownloadNameServer");
 
-            String message = downloader.debug();
-            System.out.println("Server said: " + message);
+            //String message = downloader.debug();
+            //System.out.println("Server said: " + message);
         } catch (Exception e) {
             System.out.println("Exception in main: " + e);
             e.printStackTrace();
