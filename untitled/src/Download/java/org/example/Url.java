@@ -27,8 +27,12 @@ public class Url {
 
     synchronized public int getSizeUrlSet() { return this.urlSet.size(); }
     public void addUrl (String url) throws InterruptedException {
-        this.maxLinks += 1024;
-        this.urlQueue.add(url);
+        if (this.maxLinks == this.urlSet.size()) {
+            System.out.println("========================================0======================================================");
+            this.maxLinks += 1024;
+            this.urlQueue.add(url);
+        }
+        System.out.println("========================================0======================================================");
     }
 
     @Override
@@ -71,9 +75,12 @@ public class Url {
                  } catch (Exception e) {
                      throw new RuntimeException(e);
                  }
+                 // System.out.println(token);
             }
 
-            if (urlSet.size() != maxLinks) {
+            System.out.println("Size: " + urlSet.size() + " Capacity: " + maxLinks);
+            System.out.println("Size: " + urlQueue.size());
+            if (urlSet.size() < maxLinks) {
                 Elements links = doc.select("a[href]");
                 for (Element link : links) {
                     aux = link.attr("abs:href");

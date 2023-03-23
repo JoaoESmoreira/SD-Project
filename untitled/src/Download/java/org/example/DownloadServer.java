@@ -17,21 +17,23 @@ import java.rmi.server.*;
 
 public class DownloadServer extends UnicastRemoteObject implements Download {
     static ConcurrentLinkedQueue<String> urlQueue;
+    static Url url;
+    static ArrayList<Reader> readers;
 
     public DownloadServer() throws RemoteException {
         super();
         urlQueue = new ConcurrentLinkedQueue<>();
+        url = new Url();
+        readers = new ArrayList<>();
     }
 
-    public void GetURL(String s) throws RemoteException {
+    public void GetURL(String s) throws RemoteException, InterruptedException {
         System.out.println("Got the URL: "+s);
 
-        //url.addUrl(s);
+        url.addUrl(s);
     }
 
-
-
-    public static void main(String[] args) throws InterruptedException {
+    public static void main(String[] args) {
         // Registry and Bind server
         try {
 
@@ -44,9 +46,7 @@ public class DownloadServer extends UnicastRemoteObject implements Download {
         }
 
         System.out.println("Starting");
-        Url url = new Url();
 
-        ArrayList<Reader> readers = new ArrayList<>();
         for (int id = 0; id < 300; id += 1) {
             Reader reader = new Reader(url, id);
             readers.add(reader);
@@ -55,7 +55,7 @@ public class DownloadServer extends UnicastRemoteObject implements Download {
         for (Reader reader:readers)
             reader.start();
 
-        url.addUrl("https://en.wikipedia.org/wiki/Penafiel");
+        // url.addUrl("https://en.wikipedia.org/wiki/Penafiel");
 
         try {
             Thread.sleep(2000);

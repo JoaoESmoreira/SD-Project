@@ -5,5 +5,5 @@ import java.rmi.Remote;
 import java.rmi.RemoteException;
 
 public interface Download extends Remote {
-    public void GetURL(String url) throws RemoteException;
+    public void GetURL(String url) throws RemoteException, InterruptedException;
 }
