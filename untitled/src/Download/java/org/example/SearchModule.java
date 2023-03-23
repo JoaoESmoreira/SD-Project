@@ -13,11 +13,21 @@ public class SearchModule extends UnicastRemoteObject implements Inter{
     public String sayURL(String s) throws RemoteException {
         System.out.println("server: "+s);
 
-		return "URL ENVIADO";
+		return "URL Sent";
     }
+
+	public String saySearch(String s) throws RemoteException {
+		System.out.println("server: "+s);
+
+		return "Search Sent";
+	}
 
     public static void main(String[] args) {
         try {
+
+			//criar thread para comunicar com barrel
+
+			//isto fica no programa principal
 			Inter h = new SearchModule();
 		    LocateRegistry.createRegistry(7000).rebind("ALGO", h);
 			System.out.println("Search Module ready.");
