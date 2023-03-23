@@ -8,26 +8,21 @@ import org.jsoup.select.Elements;
 
 import java.io.IOException;
 import java.util.*;
-// import java.util.concurrent.BlockingQueue;
-// import java.util.concurrent.ConcurrentHashMap;
-// import java.util.concurrent.ConcurrentLinkedQueue;
-// import java.util.concurrent.CopyOnWriteArraySet;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.CopyOnWriteArraySet;
 
 public class Url {
+    public ConcurrentHashMap<String, CopyOnWriteArraySet<String>> invertedIndex;
     public SynchronizedQueue<String> urlQueue;
     public Set<Object> urlSet;
     private int maxLinks;
-    //public ConcurrentHashMap<String, CopyOnWriteArraySet<String>> invertedIndex;
 
-    public Url() throws InterruptedException {
+    public Url() {
         super();
         urlQueue = new SynchronizedQueue<>();
         urlSet = Collections.synchronizedSet(new HashSet<>());
+        invertedIndex = new ConcurrentHashMap<>();
         maxLinks = 0;
-    }
-
-    public int getMaxLinks() {
-        return maxLinks;
     }
 
     synchronized public int getSizeUrlSet() { return this.urlSet.size(); }
@@ -36,12 +31,21 @@ public class Url {
         this.urlQueue.add(url);
     }
 
-    boolean work(int worker) {
+    @Override
+    public String toString() {
+        StringBuilder text = new StringBuilder();
+        for (CopyOnWriteArraySet<String> set:invertedIndex.values()) {
+            for (Object token: set)
+                text.append(token).append("\n");
+        }
+        return text.toString();
+    }
+
+    boolean work() {
         String url;
         String aux;
 
         try {
-            System.out.println("SET SIZE: " + urlSet.size());
             if ((url = urlQueue.pop()) == null) {
                 System.out.println("Null url");
                 return true;
@@ -50,26 +54,24 @@ public class Url {
             Connection connection = Jsoup.connect(url);
             Document doc = connection.get();
 
-            // StringTokenizer tokens = new StringTokenizer(doc.text());
-            // int countTokens = 0;
-            // while (tokens.hasMoreElements() && countTokens++ < 100) {
-            //      try {
-            //          String token = tokens.nextToken().toLowerCase();
-            //          CopyOnWriteArraySet<String> index = invertedIndex.get(token);
-            //          if (index == null) {
-            //              index = new CopyOnWriteArraySet<>();
-            //              index.add(token);
-            //              invertedIndex.put(url, index);
-            //          } else {
-            //              index.add(token);
-            //          }
-            //      } catch (Exception e) {
-            //          throw new RuntimeException(e);
-            //      }
-
-            //      System.out.println(tokens.nextToken().toLowerCase());
-            // }
-            // System.out.println("\n\n");
+            StringTokenizer tokens = new StringTokenizer(doc.text());
+            int countTokens = 0;
+            String token;
+            while (tokens.hasMoreElements() && countTokens++ < 100) {
+                token = tokens.nextToken().toLowerCase();
+                 try {
+                     CopyOnWriteArraySet<String> index = invertedIndex.get(token);
+                     if (index == null) {
+                         index = new CopyOnWriteArraySet<>();
+                         index.add(url);
+                         invertedIndex.put(token, index);
+                     } else {
+                         index.add(url);
+                     }
+                 } catch (Exception e) {
+                     throw new RuntimeException(e);
+                 }
+            }
 
             if (urlSet.size() != maxLinks) {
                 Elements links = doc.select("a[href]");

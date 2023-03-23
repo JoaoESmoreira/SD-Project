@@ -69,22 +69,14 @@ public class DownloadServer /*extends UnicastRemoteObject implements Download*/ 
         for (Reader reader:readers)
             reader.start();
 
+        url.addUrl("https://en.wikipedia.org/wiki/Penafiel");
+
         try {
             Thread.sleep(2000);
         } catch (InterruptedException e) {
             throw new RuntimeException(e);
         }
-        url.addUrl("https://en.wikipedia.org/wiki/Penafiel");
-
-        // this is a test to add another url
-        try {
-            Thread.sleep(18000);
-        } catch (InterruptedException e) {
-            throw new RuntimeException(e);
-        }
-        System.out.println("============================================================");
-        url.addUrl("https://docs.oracle.com/en/java/javase/19/docs/api/java.base/java/util/Queue.html#remove()");
-
+        System.out.println(url);
         System.out.println(url.urlSet.size());
     }
 }

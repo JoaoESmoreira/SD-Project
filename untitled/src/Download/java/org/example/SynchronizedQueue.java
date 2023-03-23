@@ -17,7 +17,7 @@ public class SynchronizedQueue<E> {
     }
 
     public synchronized void add (E element) throws InterruptedException {
-        System.out.println("Size: " + this.queue.size());
+        // System.out.println("Size: " + this.queue.size());
         while (this.queue.size() == this.capacity) {
             System.out.println("==== Full queue =====");
             wait();
@@ -29,7 +29,7 @@ public class SynchronizedQueue<E> {
     }
 
     public synchronized E pop () throws InterruptedException {
-        System.out.println("Size: " + this.queue.size());
+        // System.out.println("Size: " + this.queue.size());
         while (this.queue.size() == 0) {
             System.out.println("==== Empty queue =====");
             wait();
@@ -38,21 +38,5 @@ public class SynchronizedQueue<E> {
             notifyAll();
         }
         return this.queue.remove();
-    }
-
-    public synchronized boolean isFull () throws InterruptedException {
-        return this.queue.size() == this.capacity;
-    }
-
-    public synchronized boolean isEmpty () throws InterruptedException {
-        return this.queue.size() == 0;
-    }
-
-    public synchronized void erraseAll () throws InterruptedException {
-        System.out.println("===============================");
-        for (E element:this.queue) {
-            this.queue.remove();
-        }
-        notifyAll();
     }
 }

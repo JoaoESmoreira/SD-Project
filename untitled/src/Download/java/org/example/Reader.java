@@ -14,12 +14,12 @@ public class Reader extends Thread {
         System.out.println("Starting working");
 
         while (true) {
-            System.out.println("Work starting on: " + this.n );
-            if (!url.work(this.n)){
+            // System.out.println("Work starting on: " + this.n );
+            if (!url.work()){
                 System.out.println("I'm tired of working! " + this.n);
                 break;
             }
-            System.out.println("Work done on: " + this.n );
+            // System.out.println("Work done on: " + this.n );
         }
 
         System.out.println("I'm getting out: " + this.n);
