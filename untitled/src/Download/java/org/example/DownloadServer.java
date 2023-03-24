@@ -58,7 +58,7 @@ public class DownloadServer extends UnicastRemoteObject implements Download {
         // url.addUrl("https://en.wikipedia.org/wiki/Penafiel");
 
         try {
-            Thread.sleep(15000);
+            Thread.sleep(20000);
         } catch (InterruptedException e) {
             throw new RuntimeException(e);
         }

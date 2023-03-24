@@ -16,7 +16,7 @@ public class Url {
     public SynchronizedQueue<String> urlQueue;
     public CopyOnWriteArraySet<Object> urlSet;
     public HashMap<String, String> titles;
-    public ConcurrentHashMap<String, Integer> relevanteIndex;
+    public ConcurrentHashMap<String, CopyOnWriteArraySet<String>> relevanteIndex;
     private int maxLinks;
 
     public Url() {
@@ -57,8 +57,12 @@ public class Url {
     }
 
     public void printRelevanteIndex () {
-        for (String value:relevanteIndex.keySet()) {
-            System.out.println(value + " " + relevanteIndex.get(value));
+        for (Object url:relevanteIndex.keySet()) {
+            CopyOnWriteArraySet<String> set = relevanteIndex.get(url);
+            System.out.println("\t\t" + url);
+            for (String whoPoints:set) {
+                System.out.println("\t\t\t" + whoPoints);
+            }
         }
     }
 
@@ -79,7 +83,7 @@ public class Url {
 
             String title = doc.title();
             titles.put(url, title);
-            System.out.println("Title: " + title);
+            // System.out.println("Title: " + title);
 
             int countTokens = 0;
             String token;
@@ -102,19 +106,22 @@ public class Url {
 
             System.out.println("Size: " + urlSet.size() + " Capacity: " + getMaxLinks());
             System.out.println("Size: " + urlQueue.size());
-            if (urlSet.size() != getMaxLinks()) {
+            if (getSizeUrlSet() < getMaxLinks()) {
                 Elements links = doc.select("a[href]");
                 for (Element link : links) {
                     aux = link.attr("abs:href");
 
-                    Object value = relevanteIndex.get(url);
+                    CopyOnWriteArraySet<String> value = relevanteIndex.get(aux);
                     if (value == null) {
-                        relevanteIndex.put(url, 1);
+                        CopyOnWriteArraySet<String> set = new CopyOnWriteArraySet<>();
+                        set.add(url);
+                        relevanteIndex.put(aux, set);
                     } else {
-                        relevanteIndex.put(url, Integer.parseInt(value.toString())+1);
+                        value.add(url);
+                        relevanteIndex.put(aux, value);
                     }
 
-                    if (!urlSet.contains(aux) && getSizeUrlSet() != getMaxLinks()) {
+                    if (!urlSet.contains(aux) && getSizeUrlSet() < getMaxLinks()) {
                         urlQueue.add(aux);
                         urlSet.add(aux);
                     }
