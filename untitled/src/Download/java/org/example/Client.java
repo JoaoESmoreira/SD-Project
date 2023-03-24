@@ -13,24 +13,41 @@ public class Client {
 			Scanner sc = new Scanner(System.in);
 
 			while(true) {
-				System.out.print("1 - Indexar URL\n2 - Pesquisa\n: ");
-				String choice = sc.nextLine();
+				System.out.print("1 - Index URL\n2 - Search\n3 - Register\n4 - Log in\n: ");
+				String choice = sc.next();
 
 				if ("1".equals(choice)) {
 
 					System.out.print("URL: ");
-					String urll = sc.nextLine();
+					String urll = sc.next();
 
 					String message = h.sayURL(urll);
 					System.out.println("Server message: " + message);
 				} else if ("2".equals(choice)) {
 					System.out.print("Search: ");
-					String search = sc.nextLine();
+					String search = sc.next();
 
 					String message = h.saySearch(search);
 					System.out.println("Server message: " + message);
-				}
-				else {break;}
+				} else if ("3".equals(choice)) {
+					System.out.print("Username: ");
+					String username = sc.next();
+					System.out.print("password: ");
+					String password = sc.next();
+
+					String message = h.Register(username,password);
+					System.out.println("Server message: " + message);
+
+				}  else if ("4".equals(choice)) {
+					System.out.print("Username: ");
+					String username = sc.next();
+					System.out.print("password: ");
+					String password = sc.next();
+
+					String message = h.Login(username,password);
+					System.out.println("Server message: " + message);
+
+				} else {break;}
 			}
 
 		} catch (Exception e) {

@@ -8,14 +8,20 @@ import java.rmi.*;
 import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
 import java.rmi.server.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Objects;
 
 
 public class SearchModule extends UnicastRemoteObject implements Inter {
 
-	private Binterface c;
+    static HashMap<String, String> Regists;
+	static ArrayList<String> LoggedIN;
 
     public SearchModule() throws RemoteException {
 		super();
+        Regists = new HashMap<>();
+		LoggedIN = new ArrayList<>();
 	}
 
     public String sayURL(String s) throws RemoteException {
@@ -29,16 +35,6 @@ public class SearchModule extends UnicastRemoteObject implements Inter {
 			System.out.println("Exception in 8000: " + e);
 			e.printStackTrace();
 		}
-
-		//try {
-		//	Binterface c = (Binterface) Naming.lookup("barrel");
-		//	return 
-		//}
-		//catch (Exception e) {
-		//	System.out.println("Exception in comunication: " + e);
-		//	e.printStackTrace();
-		//}
-		
 
 		return "URL sent";
     }
@@ -61,13 +57,33 @@ public class SearchModule extends UnicastRemoteObject implements Inter {
 		return "Error";
 	}
 
-	public void setC(Binterface c){
-		this.c = c;
-	}
+    public String Register(String username, String password ) throws RemoteException{
 
-	public Binterface getC(){
-		return c;
-	}
+		if(Regists.get(username)== null){
+			Regists.put(username,password);
+			return "Regist Done";
+		} else{
+			return "Username already registed";
+		}
+
+    }
+
+    public String Login(String username, String password ) throws RemoteException{
+
+		if(Regists.get(username)== null){
+			return "Need to register";
+		} else{
+			if(Objects.equals(Regists.get(username), password)){
+				LoggedIN.add(username);
+				return "LOGGED IN";
+			}
+			return "Wrong password";
+		}
+
+
+    }
+
+
 
     public static void main(String[] args) {
         try {
