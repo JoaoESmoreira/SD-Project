@@ -14,25 +14,36 @@ import java.util.concurrent.CopyOnWriteArraySet;
 public class Url {
     public ConcurrentHashMap<String, CopyOnWriteArraySet<String>> invertedIndex;
     public SynchronizedQueue<String> urlQueue;
-    public Set<Object> urlSet;
+    public CopyOnWriteArraySet<Object> urlSet;
+    public HashMap<String, String> titles;
+    public ConcurrentHashMap<String, Integer> relevanteIndex;
     private int maxLinks;
 
     public Url() {
         super();
         urlQueue = new SynchronizedQueue<>();
-        urlSet = Collections.synchronizedSet(new HashSet<>());
+        urlSet = new CopyOnWriteArraySet<>();
         invertedIndex = new ConcurrentHashMap<>();
+        relevanteIndex = new ConcurrentHashMap<>();
+        titles = new HashMap<>();
         maxLinks = 0;
     }
 
     synchronized public int getSizeUrlSet() { return this.urlSet.size(); }
     public void addUrl (String url) throws InterruptedException {
         if (this.maxLinks == this.urlSet.size()) {
-            System.out.println("========================================0======================================================");
-            this.maxLinks += 1024;
+            int value = getMaxLinks();
+            setMaxLinks(value + 1024);
             this.urlQueue.add(url);
         }
-        System.out.println("========================================0======================================================");
+    }
+
+    synchronized public int getMaxLinks() {
+        return maxLinks;
+    }
+
+    synchronized public void setMaxLinks(int maxLinks) {
+        this.maxLinks = maxLinks;
     }
 
     @Override
@@ -43,6 +54,12 @@ public class Url {
                 text.append(token).append("\n");
         }
         return text.toString();
+    }
+
+    public void printRelevanteIndex () {
+        for (String value:relevanteIndex.keySet()) {
+            System.out.println(value + " " + relevanteIndex.get(value));
+        }
     }
 
     boolean work() {
@@ -59,6 +76,11 @@ public class Url {
             Document doc = connection.get();
 
             StringTokenizer tokens = new StringTokenizer(doc.text());
+
+            String title = doc.title();
+            titles.put(url, title);
+            System.out.println("Title: " + title);
+
             int countTokens = 0;
             String token;
             while (tokens.hasMoreElements() && countTokens++ < 100) {
@@ -78,17 +100,23 @@ public class Url {
                  // System.out.println(token);
             }
 
-            System.out.println("Size: " + urlSet.size() + " Capacity: " + maxLinks);
+            System.out.println("Size: " + urlSet.size() + " Capacity: " + getMaxLinks());
             System.out.println("Size: " + urlQueue.size());
-            if (urlSet.size() < maxLinks) {
+            if (urlSet.size() != getMaxLinks()) {
                 Elements links = doc.select("a[href]");
                 for (Element link : links) {
                     aux = link.attr("abs:href");
-                    if (!urlSet.contains(aux) && getSizeUrlSet() < maxLinks) {
+
+                    Object value = relevanteIndex.get(url);
+                    if (value == null) {
+                        relevanteIndex.put(url, 1);
+                    } else {
+                        relevanteIndex.put(url, Integer.parseInt(value.toString())+1);
+                    }
+
+                    if (!urlSet.contains(aux) && getSizeUrlSet() != getMaxLinks()) {
                         urlQueue.add(aux);
                         urlSet.add(aux);
-                        // System.out.println("Worker: " + worker);
-                        // System.out.println("Worker: " + worker + " Size: " + urlSet.size());
                     }
                 }
             }

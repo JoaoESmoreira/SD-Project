@@ -16,13 +16,13 @@ import java.rmi.server.*;
 
 
 public class DownloadServer extends UnicastRemoteObject implements Download {
-    static ConcurrentLinkedQueue<String> urlQueue;
+    // static ConcurrentLinkedQueue<String> urlQueue;
     static Url url;
     static ArrayList<Reader> readers;
 
     public DownloadServer() throws RemoteException {
         super();
-        urlQueue = new ConcurrentLinkedQueue<>();
+        // urlQueue = new ConcurrentLinkedQueue<>();
         url = new Url();
         readers = new ArrayList<>();
     }
@@ -58,11 +58,12 @@ public class DownloadServer extends UnicastRemoteObject implements Download {
         // url.addUrl("https://en.wikipedia.org/wiki/Penafiel");
 
         try {
-            Thread.sleep(2000);
+            Thread.sleep(15000);
         } catch (InterruptedException e) {
             throw new RuntimeException(e);
         }
-        System.out.println(url);
-        System.out.println(url.urlSet.size());
+        url.printRelevanteIndex();
+        // System.out.println(url);
+        // System.out.println(url.urlSet.size());
     }
 }
