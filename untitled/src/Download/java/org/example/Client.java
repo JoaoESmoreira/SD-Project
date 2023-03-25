@@ -12,8 +12,16 @@ public class Client {
 
 			Scanner sc = new Scanner(System.in);
 
+			boolean flag= false;
 			while(true) {
-				System.out.print("1 - Index URL\n2 - Search\n3 - Register\n4 - Log in\n: ");
+
+
+				if(!flag) {
+					System.out.print("1 - Index URL\n2 - Search\n3 - Register\n4 - Log in\n: ");
+				} else{
+					System.out.print("1 - Index URL\n2 - Search\n: ");
+				}
+
 				String choice = sc.next();
 
 				if ("1".equals(choice)) {
@@ -29,7 +37,7 @@ public class Client {
 
 					String message = h.saySearch(search);
 					System.out.println("Server message: " + message);
-				} else if ("3".equals(choice)) {
+				} else if ("3".equals(choice) && !flag) {
 					System.out.print("Username: ");
 					String username = sc.next();
 					System.out.print("password: ");
@@ -38,7 +46,7 @@ public class Client {
 					String message = h.Register(username,password);
 					System.out.println("Server message: " + message);
 
-				}  else if ("4".equals(choice)) {
+				}  else if ("4".equals(choice) && !flag) {
 					System.out.print("Username: ");
 					String username = sc.next();
 					System.out.print("password: ");
@@ -46,6 +54,9 @@ public class Client {
 
 					String message = h.Login(username,password);
 					System.out.println("Server message: " + message);
+					if (message.equals("LOGGED IN")){
+						flag =  true;
+					}
 
 				} else {break;}
 			}

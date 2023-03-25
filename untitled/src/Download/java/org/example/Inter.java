@@ -9,4 +9,6 @@ public interface Inter extends Remote {
 	public String saySearch(String s) throws RemoteException;
 	public String Register(String username, String password ) throws RemoteException;
 	public String Login(String username, String password ) throws RemoteException;
+
+	public String registerBarrel(Binterface client) throws RemoteException;
 }

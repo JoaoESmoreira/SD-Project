@@ -10,6 +10,7 @@ import java.rmi.registry.Registry;
 import java.rmi.server.*;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Objects;
 
 
@@ -17,6 +18,8 @@ public class SearchModule extends UnicastRemoteObject implements Inter {
 
     static HashMap<String, String> Regists;
 	static ArrayList<String> LoggedIN;
+
+	private List<Binterface> clients = new ArrayList<>();
 
     public SearchModule() throws RemoteException {
 		super();
@@ -39,10 +42,18 @@ public class SearchModule extends UnicastRemoteObject implements Inter {
 		return "URL sent";
     }
 
+	public String registerBarrel(Binterface client) throws RemoteException {
+		clients.add(client);
+		System.out.println("Registered client");
+
+		return "Barrel registed";
+	}
+
 	public String saySearch(String s) throws RemoteException {
 		System.out.println("server: "+s);
 
 		//System.setSecurityManager(new RMISecurityManager());
+
 		try{
 			Binterface h2 = (Binterface) LocateRegistry.getRegistry(9000).lookup("barrel");
 
@@ -94,11 +105,6 @@ public class SearchModule extends UnicastRemoteObject implements Inter {
 			Inter h = new SearchModule();
 		    LocateRegistry.createRegistry(7000).rebind("ALGO", h);
 
-
-
-			//SearchModule h2 = new SearchModule();
-			//h2.setC((Binterface) Naming.lookup("barrel"));
-
 			System.out.println("Search Module ready.");
 
 		} catch (RemoteException re) {
@@ -109,5 +115,19 @@ public class SearchModule extends UnicastRemoteObject implements Inter {
 		 //catch (NotBoundException ne){
 			//System.out.println("in main: " + ne);
 		//}
-    }
+
+		/*
+		try {
+			//User user = new User();
+			//LocateRegistry.createRegistry(9000);
+			SearchModule con = new SearchModule();
+			Naming.rebind("barrel", con);
+			System.out.println("Conection to barrels done");
+
+		} catch (Exception re) {
+			System.out.println("Exception in HelloImpl.main: " + re);
+		}
+		*/
+
+	}
 }
