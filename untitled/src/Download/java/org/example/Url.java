@@ -29,6 +29,17 @@ public class Url {
         maxLinks = 0;
     }
 
+    synchronized public CopyOnWriteArraySet<String> getIndex(String index) {
+        return this.invertedIndex.get(index);
+    }
+    synchronized public int getRelevantIndexSize(String index) {
+        return this.relevanteIndex.get(index).size();
+    }
+
+    synchronized public CopyOnWriteArraySet<String> getRelevantIndex (String index) {
+        return this.relevanteIndex.get(index);
+    }
+
     synchronized public int getSizeUrlSet() { return this.urlSet.size(); }
     public void addUrl (String url) throws InterruptedException {
         if (this.maxLinks == this.urlSet.size()) {
@@ -110,7 +121,6 @@ public class Url {
                 Elements links = doc.select("a[href]");
                 for (Element link : links) {
                     aux = link.attr("abs:href");
-
                     CopyOnWriteArraySet<String> value = relevanteIndex.get(aux);
                     if (value == null) {
                         CopyOnWriteArraySet<String> set = new CopyOnWriteArraySet<>();
@@ -120,7 +130,6 @@ public class Url {
                         value.add(url);
                         relevanteIndex.put(aux, value);
                     }
-
                     if (!urlSet.contains(aux) && getSizeUrlSet() < getMaxLinks()) {
                         urlQueue.add(aux);
                         urlSet.add(aux);
