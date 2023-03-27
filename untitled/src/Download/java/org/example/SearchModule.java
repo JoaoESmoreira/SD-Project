@@ -56,6 +56,10 @@ public class SearchModule extends UnicastRemoteObject implements Inter {
 		return clients.get(0).getSearch(s);
 	}
 
+	public String pointToLink(String link) throws RemoteException {
+		return clients.get(0).getPointToLink(link);
+	}
+
     public String Register(String username, String password ) throws RemoteException{
 
 		if(Regists.get(username)== null){
