@@ -8,6 +8,7 @@ import java.net.MulticastSocket;
 import java.net.DatagramPacket;
 import java.net.InetAddress;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.CopyOnWriteArraySet;
@@ -25,9 +26,30 @@ public class StorageBarrel extends UnicastRemoteObject implements Binterface {
         relevanteIndex = new ConcurrentHashMap<>();
     }
 
-    public String Infos(String s) throws RemoteException{
-        System.out.println("In barrel: "+s);
-        return "Info from barrel";
+    public String getSearch(String search) throws RemoteException {
+        //System.out.println("In barrel: "+s);
+        String output = "";
+        String[] tokens = search.split(" ");
+
+        ArrayList<CopyOnWriteArraySet<String>> relevantIndexArray = new ArrayList<>();
+        for (String string:tokens) {
+            CopyOnWriteArraySet<String> set = invertedIndex.get(string);
+            relevantIndexArray.add(set);
+        }
+
+        for (int i = 1; i < relevantIndexArray.size(); ++i)
+            relevantIndexArray.get(0).retainAll(relevantIndexArray.get(i));
+
+        ArrayList<String> relevantUrl = new ArrayList<>(relevantIndexArray.get(0));
+        relevantUrl.sort((s, t1) -> relevanteIndex.get(s).size() > relevanteIndex.get(t1).size() ? -1 : (relevanteIndex.get(s).size() > relevanteIndex.get(t1).size()) ? 1 : 0);
+
+        if (relevantUrl.size() > 0) {
+            for (String urlFromRelevant:relevantUrl)
+                output = output.concat("Enjoy: " + urlFromRelevant + " . " + relevanteIndex.get(urlFromRelevant).size() + "\n");
+        } else {
+            output = "No results found";
+        }
+        return output;
     }
 
     public static void main(String[] args) {
@@ -35,9 +57,10 @@ public class StorageBarrel extends UnicastRemoteObject implements Binterface {
 
         try {
             Inter server = (Inter) LocateRegistry.getRegistry(5000).lookup("barrel");
-            Binterface client = new StorageBarrel();
-            System.out.println(server.registerBarrel(client));
+            StorageBarrel client = new StorageBarrel();
+            String r = server.registerBarrel(client);
 
+            System.out.println(r);
         } catch (Exception e) {
             //System.out.println("Exception : " + e);
             e.printStackTrace();

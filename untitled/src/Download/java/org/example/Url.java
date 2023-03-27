@@ -108,13 +108,6 @@ public class Url {
             packet = new DatagramPacket(buffer, buffer.length, group, PORT);
             socket.send(packet);
 
-            try {
-                Thread.sleep(1000);
-            } catch (InterruptedException e) {
-                throw new RuntimeException(e);
-            }
-
-
             int countTokens = 0;
             String token;
             while (tokens.hasMoreElements() && countTokens++ < 100) {

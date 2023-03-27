@@ -4,5 +4,5 @@ import java.rmi.Remote;
 import java.rmi.RemoteException;
 
 public interface Binterface extends Remote{
-    public String Infos(String s) throws RemoteException;
+    public String getSearch(String search) throws RemoteException;
 }

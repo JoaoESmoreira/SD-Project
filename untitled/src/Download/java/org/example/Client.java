@@ -36,7 +36,7 @@ public class Client {
 					String search = sc.next();
 
 					String message = h.saySearch(search);
-					System.out.println("Server message: " + message);
+					System.out.println(message);
 				} else if ("3".equals(choice) && !flag) {
 					System.out.print("Username: ");
 					String username = sc.next();

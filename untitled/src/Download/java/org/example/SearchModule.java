@@ -19,7 +19,7 @@ public class SearchModule extends UnicastRemoteObject implements Inter {
     static HashMap<String, String> Regists;
 	static ArrayList<String> LoggedIN;
 
-	private List<Binterface> clients;
+	static ArrayList<Binterface> clients;
 
     public SearchModule() throws RemoteException {
 		super();
@@ -45,13 +45,7 @@ public class SearchModule extends UnicastRemoteObject implements Inter {
 
 	public String registerBarrel(Binterface client) throws RemoteException {
 		clients.add(client);
-		System.out.println("Barrel registed");
-
-
-		for (Binterface s : clients) {
-			System.out.println(s.Infos("teste"));
-		}
-
+		System.out.println("Barrel registed asdhjfashdhds");
 
 		return "Barrel registed";
 	}
@@ -59,7 +53,7 @@ public class SearchModule extends UnicastRemoteObject implements Inter {
 	public String saySearch(String s) throws RemoteException {
 		System.out.println("server: "+s);
 
-		return "Error";
+		return clients.get(0).getSearch(s);
 	}
 
     public String Register(String username, String password ) throws RemoteException{
@@ -84,14 +78,11 @@ public class SearchModule extends UnicastRemoteObject implements Inter {
 			}
 			return "Wrong password";
 		}
-
-
     }
 
 
     public static void main(String[] args) {
         try {
-
 			System.getProperties().put("java.security.policy","policy.all") ;
 			//System.setSecurityManager(new RMISecurityManager()); 
 
@@ -111,11 +102,9 @@ public class SearchModule extends UnicastRemoteObject implements Inter {
 
 
 		try {
-
 			SearchModule con = new SearchModule();
 			LocateRegistry.createRegistry(5000).rebind("barrel", con);
 			System.out.println("Conection to barrels ");
-
 		} catch (Exception re) {
 			System.out.println("Exception in HelloImpl.main: " + re);
 		}
