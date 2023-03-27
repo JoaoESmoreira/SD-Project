@@ -17,9 +17,9 @@ public class Client {
 
 
 				if(!flag) {
-					System.out.print("1 - Index URL\n2 - Search\n3 - Register\n4 - Log in\n5 - get pointed links\n:");
+					System.out.print("1 - Index URL\n2 - Search\n3 - Register\n4 - Log in\n:");
 				} else{
-					System.out.print("1 - Index URL\n2 - Search\n: ");
+					System.out.print("1 - Index URL\n2 - Search\n5 - get pointed links\n: ");
 				}
 
 				String choice = sc.next();
@@ -57,7 +57,7 @@ public class Client {
 					if (message.equals("LOGGED IN")){
 						flag =  true;
 					}
-				} else if ("5".equals(choice)) {
+				} else if ("5".equals(choice) && flag) {
 					System.out.print("Search: ");
 					String link = sc.next();
 
