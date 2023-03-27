@@ -52,7 +52,6 @@ public class SearchModule extends UnicastRemoteObject implements Inter {
 
 	public String saySearch(String s) throws RemoteException {
 		System.out.println("server: "+s);
-
 		return clients.get(0).getSearch(s);
 	}
 

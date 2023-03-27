@@ -40,8 +40,12 @@ public class StorageBarrel extends UnicastRemoteObject implements Binterface {
         for (int i = 1; i < relevantIndexArray.size(); ++i)
             relevantIndexArray.get(0).retainAll(relevantIndexArray.get(i));
 
-        ArrayList<String> relevantUrl = new ArrayList<>(relevantIndexArray.get(0));
-        relevantUrl.sort((s, t1) -> relevanteIndex.get(s).size() > relevanteIndex.get(t1).size() ? -1 : (relevanteIndex.get(s).size() > relevanteIndex.get(t1).size()) ? 1 : 0);
+
+        ArrayList<String> relevantUrl = new ArrayList<>();
+        if (relevantIndexArray.get(0) != null) {
+            relevantUrl = new ArrayList<>(relevantIndexArray.get(0));
+            relevantUrl.sort((s, t1) -> relevanteIndex.get(s).size() > relevanteIndex.get(t1).size() ? -1 : (relevanteIndex.get(s).size() > relevanteIndex.get(t1).size()) ? 1 : 0);
+        }
 
         if (relevantUrl.size() > 0) {
             for (String urlFromRelevant:relevantUrl)
