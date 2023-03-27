@@ -1,6 +1,6 @@
 package org.example;//package src.Download.java.org.example;
 
-
+import java.util.Random;
 
 import java.io.ByteArrayInputStream;
 import java.io.ObjectInputStream;
@@ -29,26 +29,17 @@ public class StorageBarrel extends UnicastRemoteObject implements Binterface {
 
     public static void main(String[] args) {
 
+
         try {
-            Binterface h = new StorageBarrel();
-            LocateRegistry.createRegistry(9000).rebind("barrel", h);
-            System.out.println("Storage Barrel ready.");
-
-        } catch (RemoteException re) {
-            System.out.println("Exception in barrel: " + re);
-        }
-
-
-        /*
-        try {
-            Inter server = (Inter) Naming.lookup("barrel");
+            Inter server = (Inter) LocateRegistry.getRegistry(5000).lookup("barrel");
             Binterface client = new StorageBarrel();
             System.out.println(server.registerBarrel(client));
 
         } catch (Exception e) {
+            //System.out.println("Exception : " + e);
             e.printStackTrace();
         }
-        */
+
 
 
         MulticastSocket socket = null;
@@ -72,18 +63,6 @@ public class StorageBarrel extends UnicastRemoteObject implements Binterface {
                 for (String s : arrayList) {
                     System.out.println(s);
                 }
-
-
-                /*
-                byte[] buffer = new byte[256];
-                DatagramPacket packet = new DatagramPacket(buffer, buffer.length);
-                socket.receive(packet);
-
-                System.out.println("Received packet from " + packet.getAddress().getHostAddress() + ":" + packet.getPort() + " with message:");
-                String message = new String(packet.getData(), 0, packet.getLength());
-                System.out.println(message);
-
-                 */
 
 
             }
