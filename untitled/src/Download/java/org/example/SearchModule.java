@@ -19,12 +19,13 @@ public class SearchModule extends UnicastRemoteObject implements Inter {
     static HashMap<String, String> Regists;
 	static ArrayList<String> LoggedIN;
 
-	private List<Binterface> clients = new ArrayList<>();
+	private List<Binterface> clients;
 
     public SearchModule() throws RemoteException {
 		super();
         Regists = new HashMap<>();
 		LoggedIN = new ArrayList<>();
+		clients = new ArrayList<>();
 	}
 
     public String sayURL(String s) throws RemoteException {
@@ -44,26 +45,19 @@ public class SearchModule extends UnicastRemoteObject implements Inter {
 
 	public String registerBarrel(Binterface client) throws RemoteException {
 		clients.add(client);
-		System.out.println("Registered client");
+		System.out.println("Barrel registed");
+
+
+		for (Binterface s : clients) {
+			System.out.println(s.Infos("teste"));
+		}
+
 
 		return "Barrel registed";
 	}
 
 	public String saySearch(String s) throws RemoteException {
 		System.out.println("server: "+s);
-
-		//System.setSecurityManager(new RMISecurityManager());
-
-		try{
-			Binterface h2 = (Binterface) LocateRegistry.getRegistry(9000).lookup("barrel");
-
-			return h2.Infos(s);
-
-		}catch(Exception e){
-			System.out.println("Exception in 9000: " + e);
-			e.printStackTrace();
-		}
-
 
 		return "Error";
 	}
@@ -95,7 +89,6 @@ public class SearchModule extends UnicastRemoteObject implements Inter {
     }
 
 
-
     public static void main(String[] args) {
         try {
 
@@ -116,18 +109,17 @@ public class SearchModule extends UnicastRemoteObject implements Inter {
 			//System.out.println("in main: " + ne);
 		//}
 
-		/*
+
 		try {
-			//User user = new User();
-			//LocateRegistry.createRegistry(9000);
+
 			SearchModule con = new SearchModule();
-			Naming.rebind("barrel", con);
-			System.out.println("Conection to barrels done");
+			LocateRegistry.createRegistry(5000).rebind("barrel", con);
+			System.out.println("Conection to barrels ");
 
 		} catch (Exception re) {
 			System.out.println("Exception in HelloImpl.main: " + re);
 		}
-		*/
+
 
 	}
 }
