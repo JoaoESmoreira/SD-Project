@@ -32,26 +32,17 @@ public class StorageBarrel extends UnicastRemoteObject implements Binterface {
 
     public static void main(String[] args) {
 
+
         try {
-            Binterface h = new StorageBarrel();
-            LocateRegistry.createRegistry(9000).rebind("barrel", h);
-            System.out.println("Storage Barrel ready.");
-
-        } catch (RemoteException re) {
-            System.out.println("Exception in barrel: " + re);
-        }
-
-
-        /*
-        try {
-            Inter server = (Inter) Naming.lookup("barrel");
+            Inter server = (Inter) LocateRegistry.getRegistry(5000).lookup("barrel");
             Binterface client = new StorageBarrel();
             System.out.println(server.registerBarrel(client));
 
         } catch (Exception e) {
+            //System.out.println("Exception : " + e);
             e.printStackTrace();
         }
-        */
+
 
 
         MulticastSocket socket = null;
