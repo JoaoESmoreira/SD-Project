@@ -21,4 +21,8 @@
             <version>1.15.4</version>
         </dependency>
     </dependencies>
+
+    <build>
+        <sourceDirectory>src/Download/java</sourceDirectory>
+    </build>
 </project>

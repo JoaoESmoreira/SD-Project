@@ -15,7 +15,6 @@ public class DownloadClient {
     public static void main(String[] args) {
 
         MulticastSocket socket = null;
-        long counter = 0;
         ArrayList<String> arrayList = new ArrayList<>();
         arrayList.add("ola");
         arrayList.add("boas");
@@ -23,8 +22,6 @@ public class DownloadClient {
         try {
             socket = new MulticastSocket();  // create socket without binding it (only for sending)
             while (true) {
-                String message = " packet " + counter++;
-                byte[] buffer = message.getBytes();
 
                 String MULTICAST_ADDRESS = "224.3.2.1";
                 InetAddress group = InetAddress.getByName(MULTICAST_ADDRESS);
@@ -43,7 +40,7 @@ public class DownloadClient {
 
                 try {
                     long SLEEP_TIME = 5000;
-                    sleep((long) (Math.random() * SLEEP_TIME)); } catch (InterruptedException e) { }
+                    sleep((long) (Math.random() * SLEEP_TIME)); } catch (InterruptedException ignored) { }
             }
         } catch (IOException e) {
             e.printStackTrace();
