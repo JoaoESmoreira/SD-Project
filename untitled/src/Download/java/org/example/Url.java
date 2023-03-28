@@ -14,33 +14,15 @@ import java.util.*;
 import java.util.concurrent.CopyOnWriteArraySet;
 
 public class Url {
-    //public ConcurrentHashMap<String, CopyOnWriteArraySet<String>> invertedIndex;
     public SynchronizedQueue<String> urlQueue;
     public CopyOnWriteArraySet<Object> urlSet;
-    // public HashMap<String, String> titles;
-    // public ConcurrentHashMap<String, CopyOnWriteArraySet<String>> relevanteIndex;
     private int maxLinks;
 
     public Url() {
         super();
         urlQueue = new SynchronizedQueue<>();
         urlSet = new CopyOnWriteArraySet<>();
-        // invertedIndex = new ConcurrentHashMap<>();
-        // relevanteIndex = new ConcurrentHashMap<>();
-        // titles = new HashMap<>();
-        maxLinks = 0;
     }
-
-    /*synchronized public CopyOnWriteArraySet<String> getIndex(String index) {
-        return this.invertedIndex.get(index);
-    }*/
-    /*synchronized public int getRelevantIndexSize(String index) {
-        return this.relevanteIndex.get(index).size();
-    }*/
-
-    /*synchronized public CopyOnWriteArraySet<String> getRelevantIndex (String index) {
-        return this.relevanteIndex.get(index);
-    }*/
 
     synchronized public int getSizeUrlSet() { return this.urlSet.size(); }
     public void addUrl (String url) throws InterruptedException {
@@ -58,26 +40,6 @@ public class Url {
     synchronized public void setMaxLinks(int maxLinks) {
         this.maxLinks = maxLinks;
     }
-
-    /*@Override
-    public String toString() {
-        StringBuilder text = new StringBuilder();
-        for (CopyOnWriteArraySet<String> set:invertedIndex.values()) {
-            for (Object token: set)
-                text.append(token).append("\n");
-        }
-        return text.toString();
-    }*/
-
-    /*public void printRelevanteIndex () {
-        for (Object url:relevanteIndex.keySet()) {
-            CopyOnWriteArraySet<String> set = relevanteIndex.get(url);
-            System.out.println("\t\t" + url);
-            for (String whoPoints:set) {
-                System.out.println("\t\t\t" + whoPoints);
-            }
-        }
-    }*/
 
     boolean work(MulticastSocket socket, InetAddress group) {
         String url;
@@ -98,8 +60,6 @@ public class Url {
             StringTokenizer tokens = new StringTokenizer(doc.text());
 
             String title = doc.title();
-            // titles.put(url, title);
-            // System.out.println("Title: " + title);
 
             message = "Title" + " " + url + " " + title;
 
@@ -119,14 +79,6 @@ public class Url {
                      packet = new DatagramPacket(buffer, buffer.length, group, PORT);
                      socket.send(packet);
 
-                     /*CopyOnWriteArraySet<String> index = invertedIndex.get(token);
-                     if (index == null) {
-                         index = new CopyOnWriteArraySet<>();
-                         index.add(url);
-                         invertedIndex.put(token, index);
-                     } else {
-                         index.add(url);
-                     }*/
                  // } catch (Exception e) {
                  //     throw new RuntimeException(e);
                  // }
@@ -145,15 +97,6 @@ public class Url {
                     packet = new DatagramPacket(buffer, buffer.length, group, PORT);
                     socket.send(packet);
 
-                    /*CopyOnWriteArraySet<String> value = relevanteIndex.get(aux);
-                    if (value == null) {
-                        CopyOnWriteArraySet<String> set = new CopyOnWriteArraySet<>();
-                        set.add(url);
-                        relevanteIndex.put(aux, set);
-                    } else {
-                        value.add(url);
-                        relevanteIndex.put(aux, value);
-                    }*/
                     if (!urlSet.contains(aux) && getSizeUrlSet() < getMaxLinks()) {
                         urlQueue.add(aux);
                         urlSet.add(aux);

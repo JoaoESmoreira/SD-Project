@@ -1,16 +1,12 @@
 package org.example;
 
-import org.example.Binterface;
-import src.Download.java.org.example.Download;
+// import org.example.Download;
 
-import java.net.MalformedURLException;
 import java.rmi.*;
 import java.rmi.registry.LocateRegistry;
-import java.rmi.registry.Registry;
 import java.rmi.server.*;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Objects;
 
 

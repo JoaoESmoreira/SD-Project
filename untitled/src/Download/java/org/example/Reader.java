@@ -3,7 +3,6 @@ package org.example;
 import java.io.IOException;
 import java.net.InetAddress;
 import java.net.MulticastSocket;
-import java.util.ArrayList;
 
 public class Reader extends Thread {
     Url url;
@@ -17,7 +16,7 @@ public class Reader extends Thread {
     @Override
     public void run() {
         System.out.println("Starting working");
-        MulticastSocket socket = null;
+        MulticastSocket socket;
         InetAddress group;
         try {
             socket = new MulticastSocket();  // create socket without binding it (only for sending)

@@ -2,6 +2,9 @@ package org.example;
 
 import sun.misc.Signal;
 
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileWriter;
 import java.rmi.*;
 import java.rmi.registry.LocateRegistry;
 import java.rmi.server.*;
@@ -12,6 +15,7 @@ import java.net.InetAddress;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Scanner;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.CopyOnWriteArraySet;
 
@@ -71,6 +75,43 @@ public class StorageBarrel extends UnicastRemoteObject implements Binterface {
     }
 
     public static void main(String[] args) {
+
+        // receives file path
+        if (args.length != 1) {
+            System.out.println("Wrong number of arguments.");
+            System.exit(0);
+        }
+        // read data file
+        try {
+            File dataFile = new File(args[0]);
+            if (dataFile.exists()) {
+                Scanner scn = new Scanner(dataFile);
+                while (scn.hasNextLine()) {
+                    String data = scn.nextLine();
+                    System.out.println(data + " c");
+                }
+                scn.close();
+            } else {
+                if (!dataFile.createNewFile())
+                    System.exit(0);
+                else
+                    System.out.println("Created file");
+            }
+        } catch (FileNotFoundException e) {
+            System.out.println("An error occurred.");
+            e.printStackTrace();
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+
+        // open a file to write
+        FileWriter myWriter;
+        try {
+            myWriter = new FileWriter(args[0]);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+
         try {
             Inter server = (Inter) LocateRegistry.getRegistry(5000).lookup("barrel");
             StorageBarrel client = new StorageBarrel();
@@ -79,7 +120,8 @@ public class StorageBarrel extends UnicastRemoteObject implements Binterface {
             Signal.handle(new Signal("INT"), sig -> {
                 try {
                     server.logoutBarrel(client);
-                } catch (RemoteException e) {
+                    myWriter.close();
+                } catch (IOException e) {
                     throw new RuntimeException(e);
                 }
                 System.exit(0);
@@ -104,6 +146,7 @@ public class StorageBarrel extends UnicastRemoteObject implements Binterface {
             while (true) {
                 socket.receive(packet);
                 type = new String(packet.getData(), 0, packet.getLength());
+                myWriter.write(type + "\n");
 
                 String[] tokens = type.split(" ");
 
@@ -149,6 +192,7 @@ public class StorageBarrel extends UnicastRemoteObject implements Binterface {
                         break;
                 }
             }
+            // myWriter.close();
         } catch (IOException e) {
             e.printStackTrace();
         } finally {

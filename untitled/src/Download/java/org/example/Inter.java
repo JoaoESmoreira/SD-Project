@@ -1,16 +1,16 @@
 package org.example;
 
-import java.rmi.*;
+// import java.rmi.*;
 import java.rmi.Remote;
 import java.rmi.RemoteException;
 
 public interface Inter extends Remote {
-	public String sayURL(String s) throws RemoteException;
-	public String saySearch(String s) throws RemoteException;
-	public String pointToLink(String link) throws RemoteException;
-	public String Register(String username, String password ) throws RemoteException;
-	public String Login(String username, String password ) throws RemoteException;
+	String sayURL(String s) throws RemoteException;
+	String saySearch(String s) throws RemoteException;
+	String pointToLink(String link) throws RemoteException;
+	String Register(String username, String password ) throws RemoteException;
+	String Login(String username, String password ) throws RemoteException;
 
-	public String registerBarrel(Binterface client) throws RemoteException;
-	public void logoutBarrel (Binterface client) throws RemoteException;
+	String registerBarrel(Binterface client) throws RemoteException;
+	void logoutBarrel (Binterface client) throws RemoteException;
 }
