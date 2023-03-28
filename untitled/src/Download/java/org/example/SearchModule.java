@@ -19,7 +19,7 @@ public class SearchModule extends UnicastRemoteObject implements Inter {
     static HashMap<String, String> Regists;
 	static ArrayList<String> LoggedIN;
 
-	static ArrayList<Binterface> clients;
+	static ArrayList<Pair<Binterface, Boolean>> clients;
 
     public SearchModule() throws RemoteException {
 		super();
@@ -44,19 +44,41 @@ public class SearchModule extends UnicastRemoteObject implements Inter {
     }
 
 	public String registerBarrel(Binterface client) throws RemoteException {
-		clients.add(client);
+		clients.add(new Pair<>(client, false));
 		System.out.println("Barrel registed asdhjfashdhds");
 
 		return "Barrel registed";
 	}
 
+	public void logoutBarrel (Binterface client) throws RemoteException {
+		boolean remove = clients.removeIf(obj -> obj.getFirst().equals(client));
+		if (remove) {
+			System.out.println("\nIT WAS REMOVED\n");
+		}
+	}
+
 	public String saySearch(String s) throws RemoteException {
-		System.out.println("server: "+s);
-		return clients.get(0).getSearch(s);
+		String output = "No SearchBarrel Operational";
+		for (Pair<Binterface, Boolean> pair:clients) {
+			if (!pair.getSecond()) {
+				pair.setSecond(true);
+				output = pair.getFirst().getSearch(s);
+				pair.setSecond(false);
+			}
+		}
+		return output;
 	}
 
 	public String pointToLink(String link) throws RemoteException {
-		return clients.get(0).getPointToLink(link);
+		String output = "No SearchBarrel Operational";
+		for (Pair<Binterface, Boolean> pair:clients) {
+			if (!pair.getSecond()) {
+				pair.setSecond(true);
+				output = pair.getFirst().getPointToLink(link);
+				pair.setSecond(false);
+			}
+		}
+		return output;
 	}
 
     public String Register(String username, String password ) throws RemoteException{

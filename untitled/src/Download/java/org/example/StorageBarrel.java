@@ -1,5 +1,7 @@
 package org.example;
 
+import sun.misc.Signal;
+
 import java.rmi.*;
 import java.rmi.registry.LocateRegistry;
 import java.rmi.server.*;
@@ -69,20 +71,23 @@ public class StorageBarrel extends UnicastRemoteObject implements Binterface {
     }
 
     public static void main(String[] args) {
-
-
         try {
             Inter server = (Inter) LocateRegistry.getRegistry(5000).lookup("barrel");
             StorageBarrel client = new StorageBarrel();
             String r = server.registerBarrel(client);
-
             System.out.println(r);
+            Signal.handle(new Signal("INT"), sig -> {
+                try {
+                    server.logoutBarrel(client);
+                } catch (RemoteException e) {
+                    throw new RuntimeException(e);
+                }
+                System.exit(0);
+            });
         } catch (Exception e) {
             //System.out.println("Exception : " + e);
             e.printStackTrace();
         }
-
-
 
         MulticastSocket socket = null;
         try {

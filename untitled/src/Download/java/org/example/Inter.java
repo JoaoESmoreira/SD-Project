@@ -12,4 +12,5 @@ public interface Inter extends Remote {
 	public String Login(String username, String password ) throws RemoteException;
 
 	public String registerBarrel(Binterface client) throws RemoteException;
+	public void logoutBarrel (Binterface client) throws RemoteException;
 }
