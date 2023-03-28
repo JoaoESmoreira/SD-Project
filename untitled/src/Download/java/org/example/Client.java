@@ -23,6 +23,7 @@ public class Client {
 				}
 
 				String choice = sc.next();
+				sc.nextLine();
 
 				if ("1".equals(choice)) {
 
@@ -33,15 +34,17 @@ public class Client {
 					System.out.println("Server message: " + message);
 				} else if ("2".equals(choice)) {
 					System.out.print("Search: ");
-					String search = sc.next();
+					String search = sc.nextLine();
 
 					String message = h.saySearch(search);
 					System.out.println(message);
 				} else if ("3".equals(choice) && !flag) {
 					System.out.print("Username: ");
 					String username = sc.next();
+					sc.nextLine();
 					System.out.print("password: ");
 					String password = sc.next();
+					sc.nextLine();
 
 					String message = h.Register(username,password);
 					System.out.println("Server message: " + message);
@@ -49,8 +52,10 @@ public class Client {
 				}  else if ("4".equals(choice) && !flag) {
 					System.out.print("Username: ");
 					String username = sc.next();
+					sc.nextLine();
 					System.out.print("password: ");
 					String password = sc.next();
+					sc.nextLine();
 
 					String message = h.Login(username,password);
 					System.out.println("Server message: " + message);
@@ -60,7 +65,7 @@ public class Client {
 				} else if ("5".equals(choice) && flag) {
 					System.out.print("Search: ");
 					String link = sc.next();
-
+					sc.nextLine();
 					String message = h.pointToLink(link);
 					System.out.println(message);
 				} else {break;}
