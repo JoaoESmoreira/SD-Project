@@ -13,4 +13,6 @@ public interface Inter extends Remote {
 
 	String registerBarrel(Binterface client) throws RemoteException;
 	void logoutBarrel (Binterface client) throws RemoteException;
+	String Stats() throws RemoteException;
+
 }

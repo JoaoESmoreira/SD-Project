@@ -6,4 +6,5 @@ import java.rmi.RemoteException;
 public interface Binterface extends Remote{
     String getSearch(String search) throws RemoteException;
     String getPointToLink (String point) throws RemoteException;
+    public String GetInfos() throws RemoteException;
 }

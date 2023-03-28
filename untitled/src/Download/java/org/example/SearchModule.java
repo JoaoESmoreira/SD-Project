@@ -54,6 +54,7 @@ public class SearchModule extends UnicastRemoteObject implements Inter {
 	}
 
 	public String saySearch(String s) throws RemoteException {
+		//System.out.println(s);
 		String output = "No SearchBarrel Operational";
 		for (Pair<Binterface, Boolean> pair:clients) {
 			if (!pair.getSecond()) {
@@ -102,7 +103,19 @@ public class SearchModule extends UnicastRemoteObject implements Inter {
     }
 
 
-    public static void main(String[] args) {
+	public String Stats() throws RemoteException {
+		String output = "No SearchBarrel Operational";
+		for (Pair<Binterface, Boolean> pair:clients) {
+			if (!pair.getSecond()) {
+				pair.setSecond(true);
+				output = pair.getFirst().GetInfos();
+				pair.setSecond(false);
+			}
+		}
+		return output;
+	}
+
+	public static void main(String[] args) {
         try {
 			System.getProperties().put("java.security.policy","policy.all") ;
 			//System.setSecurityManager(new RMISecurityManager()); 

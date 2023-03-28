@@ -13,9 +13,7 @@ import java.net.MulticastSocket;
 import java.net.DatagramPacket;
 import java.net.InetAddress;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Scanner;
+import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.CopyOnWriteArraySet;
 
@@ -23,6 +21,8 @@ import java.util.concurrent.CopyOnWriteArraySet;
 public class StorageBarrel extends UnicastRemoteObject implements Binterface {
     public static ConcurrentHashMap<String, CopyOnWriteArraySet<String>> invertedIndex;
     public static HashMap<String, String> titles;
+
+    public static HashMap<String, Integer> searches;
     public static ConcurrentHashMap<String, CopyOnWriteArraySet<String>> relevanteIndex;
 
     StorageBarrel() throws RemoteException{
@@ -30,9 +30,52 @@ public class StorageBarrel extends UnicastRemoteObject implements Binterface {
         invertedIndex = new ConcurrentHashMap<>();
         titles = new HashMap<>();
         relevanteIndex = new ConcurrentHashMap<>();
+        searches = new HashMap<>();
+    }
+
+    public String GetInfos() throws RemoteException{
+
+        String output = "Most searched:\n";
+
+        if(searches.isEmpty()){
+            return "No searches done";
+        }
+
+        List<Map.Entry<String, Integer>> list = new ArrayList<>(searches.entrySet());
+        list.sort(new Comparator<Map.Entry<String, Integer>>() {
+            public int compare(Map.Entry<String, Integer> o1, Map.Entry<String, Integer> o2) {
+                return o2.getValue().compareTo(o1.getValue());
+            }
+        });
+
+        Map<String, Integer> sortedMap = new LinkedHashMap<>();
+        for (Map.Entry<String, Integer> entry : list) {
+            sortedMap.put(entry.getKey(), entry.getValue());
+        }
+
+        int con=1;
+        for (Map.Entry<String, Integer> entry : sortedMap.entrySet()){
+            output = output.concat( String.valueOf(con) + " - '"  + entry.getKey() + "'\n");
+            con++;
+            if(con>10) break;
+
+        }
+
+
+
+        return output;
     }
 
     public String getSearch(String search) throws RemoteException {
+
+
+        if (searches.get(search)!=null){
+           searches.replace(search,searches.get(search),searches.get(search)+1);
+        }
+        else{
+            searches.put(search,1);
+        }
+
         //System.out.println("In barrel: "+s);
         String output = "";
         String[] tokens = search.split(" ");
@@ -41,11 +84,17 @@ public class StorageBarrel extends UnicastRemoteObject implements Binterface {
         for (String string:tokens) {
             CopyOnWriteArraySet<String> set = invertedIndex.get(string);
             relevantIndexArray.add(set);
+            //System.out.println(set);
         }
 
-        for (int i = 1; i < relevantIndexArray.size(); ++i)
-            relevantIndexArray.get(0).retainAll(relevantIndexArray.get(i));
 
+
+        for (int i = 1; i < relevantIndexArray.size(); ++i) {
+            if(relevantIndexArray.get(i)==null){
+                return "No results found";
+            }
+            relevantIndexArray.get(0).retainAll(relevantIndexArray.get(i));
+        }
 
         ArrayList<String> relevantUrl = new ArrayList<>();
         if (relevantIndexArray.get(0) != null) {
