@@ -73,6 +73,7 @@ public class SearchModule extends UnicastRemoteObject implements Inter {
 				pair.setSecond(true);
 				output = pair.getFirst().getPointToLink(link);
 				pair.setSecond(false);
+				break;
 			}
 		}
 		return output;
@@ -80,6 +81,17 @@ public class SearchModule extends UnicastRemoteObject implements Inter {
 
     public String Register(String username, String password ) throws RemoteException{
 
+		String output = "No SearchBarrel Operational";
+		for (Pair<Binterface, Boolean> pair:clients) {
+			if (!pair.getSecond()) {
+				pair.setSecond(true);
+				output = pair.getFirst().Regist(username, password);
+				pair.setSecond(false);
+			}
+		}
+		return output;
+
+		/*
 		if(Regists.get(username)== null){
 			Regists.put(username,password);
 			return "Regist Done";
@@ -87,10 +99,25 @@ public class SearchModule extends UnicastRemoteObject implements Inter {
 			return "Username already registed";
 		}
 
+		 */
+
+
     }
 
     public String Login(String username, String password ) throws RemoteException{
 
+		String output = "No SearchBarrel Operational";
+		for (Pair<Binterface, Boolean> pair:clients) {
+			if (!pair.getSecond()) {
+				pair.setSecond(true);
+				output = pair.getFirst().Log_in(username,password);
+				pair.setSecond(false);
+				break;
+			}
+		}
+		return output;
+
+		/*
 		if(Regists.get(username)== null){
 			return "Need to register";
 		} else{
@@ -100,6 +127,9 @@ public class SearchModule extends UnicastRemoteObject implements Inter {
 			}
 			return "Wrong password";
 		}
+
+		 */
+		//return "";
     }
 
 

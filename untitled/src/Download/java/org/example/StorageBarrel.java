@@ -24,6 +24,8 @@ public class StorageBarrel extends UnicastRemoteObject implements Binterface {
 
     public static HashMap<String, Integer> searches;
     public static ConcurrentHashMap<String, CopyOnWriteArraySet<String>> relevanteIndex;
+
+    static HashMap<String, String> Regists;
     String filename;
 
     StorageBarrel() throws RemoteException{
@@ -32,6 +34,7 @@ public class StorageBarrel extends UnicastRemoteObject implements Binterface {
         titles = new HashMap<>();
         relevanteIndex = new ConcurrentHashMap<>();
         searches = new HashMap<>();
+        Regists = new HashMap<>();
 
     }
 
@@ -41,6 +44,49 @@ public class StorageBarrel extends UnicastRemoteObject implements Binterface {
 
     public String Getfilename(){
         return this.filename;
+    }
+
+    public String Regist(String username, String password) throws RemoteException{
+
+        FileWriter Writer;
+        String output = "";
+        try {
+            Writer = new FileWriter(filename, true);
+
+            if (Regists.get(username) == null) {
+                Regists.put(username, password);
+                String msgregist = "Regist " + username + " " + password;
+                Writer.write(msgregist + "\n");
+                output =  "Regist Done";
+            } else {
+                output =  "Username already registed";
+            }
+
+            Writer.close();
+            return output;
+
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    public String Log_in(String username, String password) throws RemoteException{
+
+        String output = "";
+
+        if(Regists.get(username)== null){
+            output = "Need to register";
+        } else{
+            if(Objects.equals(Regists.get(username), password)){
+                output =  "LOGGED IN";
+            }
+            else {
+                output = "Wrong password";
+            }
+        }
+
+        return output;
+
     }
 
     public String GetInfos() throws RemoteException{
@@ -195,7 +241,7 @@ public class StorageBarrel extends UnicastRemoteObject implements Binterface {
         try {
             File dataFile = new File(args[0]);
             if (dataFile.exists()) {
-                String title, url, type, token, mUrl, pesquisa;
+                String title, url, type, token, mUrl, pesquisa, username, pass;
                 int npesquisa;
                 Scanner scn = new Scanner(dataFile);
                 while (scn.hasNextLine()) {
@@ -257,6 +303,12 @@ public class StorageBarrel extends UnicastRemoteObject implements Binterface {
                                 else{
                                     searches.put(pesquisa,npesquisa);
                                 }
+                                break;
+                            case "Regist":
+                                username = tokens[1];
+                                pass = tokens[2];
+
+                                Regists.putIfAbsent(username, pass);
                                 break;
                         }
                     }
