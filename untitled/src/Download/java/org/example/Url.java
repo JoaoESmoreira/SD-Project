@@ -66,7 +66,7 @@ public class Url {
 
             String title = doc.title();
             if(title.equals("")){
-                title = "No title";
+                title = "No_title";
             }
             message = "Title" + " " + url + " " + title;
 
@@ -80,7 +80,9 @@ public class Url {
             while (tokens.hasMoreElements() && countTokens++ < 100) {
                 token = tokens.nextToken().toLowerCase();
                  // try {
-
+                     if(token.equals("")){
+                     token = "No_token";
+                     }
                      message = "Token" + " " + url + " " + token;
                      buffer = message.getBytes();
                      packet = new DatagramPacket(buffer, buffer.length, group, PORT);
@@ -112,9 +114,11 @@ public class Url {
                 }
             }
         } catch (IOException e) {
-            // e.printStackTrace();
+            //System.out.println("IOException Work" + e);
         } catch (InterruptedException e) {
-            throw new RuntimeException(e);
+            System.out.println("InterruptedException Work");
+        } catch (IllegalArgumentException ie){
+            System.out.println("IllegalArgumentException Work");
         }
         return true;
     }

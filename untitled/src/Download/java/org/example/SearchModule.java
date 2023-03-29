@@ -12,6 +12,7 @@ import java.util.Objects;
 
 public class SearchModule extends UnicastRemoteObject implements Inter {
 
+	public static Download conection;
     static HashMap<String, String> Regists;
 	//static ArrayList<String> LoggedIN;
 
@@ -24,11 +25,11 @@ public class SearchModule extends UnicastRemoteObject implements Inter {
 		clients = new ArrayList<>();
 	}
 
-    public String sayURL(String s) throws RemoteException {
+
+	public String sayURL(String s) throws RemoteException {
         System.out.println("server: "+s);
 
 		try{
-			Download conection = (Download) LocateRegistry.getRegistry(8000).lookup("DownloadNameServer");
 			conection.GetURL(s);
 
 		} catch (Exception e) {
@@ -41,7 +42,7 @@ public class SearchModule extends UnicastRemoteObject implements Inter {
 
 	public String registerBarrel(Binterface client) throws RemoteException {
 		clients.add(new Pair<>(client, false));
-		System.out.println("Barrel registed asdhjfashdhds");
+		System.out.println("Barrel registed");
 
 		return "Barrel registed";
 	}
@@ -91,17 +92,6 @@ public class SearchModule extends UnicastRemoteObject implements Inter {
 		}
 		return output;
 
-		/*
-		if(Regists.get(username)== null){
-			Regists.put(username,password);
-			return "Regist Done";
-		} else{
-			return "Username already registed";
-		}
-
-		 */
-
-
     }
 
     public String Login(String username, String password ) throws RemoteException{
@@ -117,24 +107,11 @@ public class SearchModule extends UnicastRemoteObject implements Inter {
 		}
 		return output;
 
-		/*
-		if(Regists.get(username)== null){
-			return "Need to register";
-		} else{
-			if(Objects.equals(Regists.get(username), password)){
-				//LoggedIN.add(username);
-				return "LOGGED IN";
-			}
-			return "Wrong password";
-		}
-
-		 */
-		//return "";
     }
 
 
 	public String Stats() throws RemoteException {
-		String output = "No SearchBarrel Operational";
+		String output = "No SearchBarrel Operational\n";
 		for (Pair<Binterface, Boolean> pair:clients) {
 			if (!pair.getSecond()) {
 				pair.setSecond(true);
@@ -142,6 +119,9 @@ public class SearchModule extends UnicastRemoteObject implements Inter {
 				pair.setSecond(false);
 			}
 		}
+		output = output.concat("Number of Active Barrels: " + clients.size() + "\n" );
+		output = output.concat("Number of Active Downloaders: " + conection.getNdownloaders() + "\n" );
+
 		return output;
 	}
 
@@ -163,7 +143,13 @@ public class SearchModule extends UnicastRemoteObject implements Inter {
 		 //catch (NotBoundException ne){
 			//System.out.println("in main: " + ne);
 		//}
+		try{
+			conection = (Download) LocateRegistry.getRegistry(8000).lookup("DownloadNameServer");
 
+		} catch (Exception e) {
+			System.out.println("Exception in 8000: " + e);
+			e.printStackTrace();
+		}
 
 		try {
 			SearchModule con = new SearchModule();

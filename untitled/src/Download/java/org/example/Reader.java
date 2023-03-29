@@ -23,7 +23,8 @@ public class Reader extends Thread {
             String MULTICAST_ADDRESS = "224.3.2.1";
             group = InetAddress.getByName(MULTICAST_ADDRESS);
         } catch (IOException e) {
-            throw new RuntimeException(e);
+            System.out.println("IOException Reader");
+            return;
         }
 
         while (true) {

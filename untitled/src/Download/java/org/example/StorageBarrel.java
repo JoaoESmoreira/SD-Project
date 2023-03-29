@@ -249,7 +249,7 @@ public class StorageBarrel extends UnicastRemoteObject implements Binterface {
                     System.out.println(data + " c");
                     String[] tokens = data.split(" ");
 
-                    if(tokens[0] != null && tokens[1] != null && tokens[2] != null){
+                    if(tokens.length >= 3){
 
                         switch (tokens[0]){
                             case "Title":
@@ -336,6 +336,7 @@ public class StorageBarrel extends UnicastRemoteObject implements Binterface {
             socket = new MulticastSocket(PORT);
             InetAddress group = InetAddress.getByName(MULTICAST_ADDRESS);
             socket.joinGroup(group);
+
 
             String title, url, type, token, mUrl;
             byte[] buffer = new byte[256];
