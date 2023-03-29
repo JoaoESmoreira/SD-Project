@@ -26,10 +26,13 @@ public class Url {
 
     synchronized public int getSizeUrlSet() { return this.urlSet.size(); }
     public void addUrl (String url) throws InterruptedException {
-        if (this.maxLinks == this.urlSet.size()) {
+        if (this.maxLinks >= this.urlSet.size()) {
             int value = getMaxLinks();
             setMaxLinks(value + 1024);
+            this.urlSet.add(url);
             this.urlQueue.add(url);
+        } else {
+            setMaxLinks(this.urlSet.size());
         }
     }
 
@@ -49,6 +52,8 @@ public class Url {
         DatagramPacket packet;
 
         try {
+
+
             if ((url = urlQueue.pop()) == null) {
                 System.out.println("Null url");
                 return true;
@@ -60,7 +65,9 @@ public class Url {
             StringTokenizer tokens = new StringTokenizer(doc.text());
 
             String title = doc.title();
-
+            if(title.equals("")){
+                title = "No title";
+            }
             message = "Title" + " " + url + " " + title;
 
             buffer = message.getBytes();
@@ -97,7 +104,8 @@ public class Url {
                     packet = new DatagramPacket(buffer, buffer.length, group, PORT);
                     socket.send(packet);
 
-                    if (!urlSet.contains(aux) && getSizeUrlSet() < getMaxLinks()) {
+
+                    if (!urlSet.contains(aux) && (getSizeUrlSet() < getMaxLinks())) {
                         urlQueue.add(aux);
                         urlSet.add(aux);
                     }

@@ -13,14 +13,14 @@ import java.util.Objects;
 public class SearchModule extends UnicastRemoteObject implements Inter {
 
     static HashMap<String, String> Regists;
-	static ArrayList<String> LoggedIN;
+	//static ArrayList<String> LoggedIN;
 
 	static ArrayList<Pair<Binterface, Boolean>> clients;
 
     public SearchModule() throws RemoteException {
 		super();
         Regists = new HashMap<>();
-		LoggedIN = new ArrayList<>();
+		//LoggedIN = new ArrayList<>();
 		clients = new ArrayList<>();
 	}
 
@@ -95,7 +95,7 @@ public class SearchModule extends UnicastRemoteObject implements Inter {
 			return "Need to register";
 		} else{
 			if(Objects.equals(Regists.get(username), password)){
-				LoggedIN.add(username);
+				//LoggedIN.add(username);
 				return "LOGGED IN";
 			}
 			return "Wrong password";

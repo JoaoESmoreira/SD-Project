@@ -24,6 +24,7 @@ public class StorageBarrel extends UnicastRemoteObject implements Binterface {
 
     public static HashMap<String, Integer> searches;
     public static ConcurrentHashMap<String, CopyOnWriteArraySet<String>> relevanteIndex;
+    String filename;
 
     StorageBarrel() throws RemoteException{
         super();
@@ -31,6 +32,15 @@ public class StorageBarrel extends UnicastRemoteObject implements Binterface {
         titles = new HashMap<>();
         relevanteIndex = new ConcurrentHashMap<>();
         searches = new HashMap<>();
+
+    }
+
+    public void Setfilename(String name){
+        this.filename = name;
+    }
+
+    public String Getfilename(){
+        return this.filename;
     }
 
     public String GetInfos() throws RemoteException{
@@ -68,47 +78,68 @@ public class StorageBarrel extends UnicastRemoteObject implements Binterface {
 
     public String getSearch(String search) throws RemoteException {
 
-
-        if (searches.get(search)!=null){
-           searches.replace(search,searches.get(search),searches.get(search)+1);
-        }
-        else{
-            searches.put(search,1);
-        }
-
-        //System.out.println("In barrel: "+s);
-        String output = "";
-        String[] tokens = search.split(" ");
-
-        ArrayList<CopyOnWriteArraySet<String>> relevantIndexArray = new ArrayList<>();
-        for (String string:tokens) {
-            CopyOnWriteArraySet<String> set = invertedIndex.get(string);
-            relevantIndexArray.add(set);
-            //System.out.println(set);
-        }
-
-
-
-        for (int i = 1; i < relevantIndexArray.size(); ++i) {
-            if(relevantIndexArray.get(i)==null){
-                return "No results found";
+        FileWriter Writer;
+        try {
+            Writer = new FileWriter(filename,true);
+        
+        
+        
+            if (searches.get(search)!=null){
+                searches.replace(search,searches.get(search),searches.get(search)+1);
             }
-            relevantIndexArray.get(0).retainAll(relevantIndexArray.get(i));
-        }
+            else{
+                searches.put(search,1);
+            }
+            String msgsearch = "Search " + search + " " + searches.get(search);
+            Writer.write(msgsearch + "\n");
+            
 
-        ArrayList<String> relevantUrl = new ArrayList<>();
-        if (relevantIndexArray.get(0) != null) {
-            relevantUrl = new ArrayList<>(relevantIndexArray.get(0));
-            relevantUrl.sort((s, t1) -> relevanteIndex.get(s).size() > relevanteIndex.get(t1).size() ? -1 : (relevanteIndex.get(s).size() > relevanteIndex.get(t1).size()) ? 1 : 0);
-        }
+            String output = "";
+            String[] tokens = search.split(" ");
+    
+            ArrayList<CopyOnWriteArraySet<String>> relevantIndexArray = new ArrayList<>();
+            for (String string:tokens) {
+                CopyOnWriteArraySet<String> set = invertedIndex.get(string);
+                relevantIndexArray.add(set);
+                //System.out.println(set);
+            }
+    
+    
+    
+            for (int i = 1; i < relevantIndexArray.size(); ++i) {
+                if(relevantIndexArray.get(i)==null){
+                    try {
+                        Writer.close();
+                    } catch (IOException e) {
+                        throw new RuntimeException(e);
+                    }
+                    return "No results found";
+                }
+                relevantIndexArray.get(0).retainAll(relevantIndexArray.get(i));
+            }
+    
+            ArrayList<String> relevantUrl = new ArrayList<>();
+            if (relevantIndexArray.get(0) != null) {
+                relevantUrl = new ArrayList<>(relevantIndexArray.get(0));
+                relevantUrl.sort((s, t1) -> relevanteIndex.get(s).size() > relevanteIndex.get(t1).size() ? -1 : (relevanteIndex.get(s).size() > relevanteIndex.get(t1).size()) ? 1 : 0);
+            }
+    
+            if (relevantUrl.size() > 0) {
+                for (String urlFromRelevant:relevantUrl) {
+                    System.out.println(urlFromRelevant);
+                    output = output.concat("Enjoy: " + urlFromRelevant + "\n");
+                }
+            } else {
+                output = "No results found";
+            }
 
-        if (relevantUrl.size() > 0) {
-            for (String urlFromRelevant:relevantUrl)
-                output = output.concat("Enjoy: " + urlFromRelevant + " . " + relevanteIndex.get(urlFromRelevant).size() + "\n");
-        } else {
-            output = "No results found";
+        
+            Writer.close();
+            return output;
+        } catch (IOException e) {
+            throw new RuntimeException(e);
         }
-        return output;
+        
     }
 
 
@@ -130,33 +161,12 @@ public class StorageBarrel extends UnicastRemoteObject implements Binterface {
             System.out.println("Wrong number of arguments.");
             System.exit(0);
         }
-        // read data file
-        try {
-            File dataFile = new File(args[0]);
-            if (dataFile.exists()) {
-                Scanner scn = new Scanner(dataFile);
-                while (scn.hasNextLine()) {
-                    String data = scn.nextLine();
-                    System.out.println(data + " c");
-                }
-                scn.close();
-            } else {
-                if (!dataFile.createNewFile())
-                    System.exit(0);
-                else
-                    System.out.println("Created file");
-            }
-        } catch (FileNotFoundException e) {
-            System.out.println("An error occurred.");
-            e.printStackTrace();
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
+
 
         // open a file to write
         FileWriter myWriter;
         try {
-            myWriter = new FileWriter(args[0]);
+            myWriter = new FileWriter(args[0],true);
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
@@ -164,6 +174,7 @@ public class StorageBarrel extends UnicastRemoteObject implements Binterface {
         try {
             Inter server = (Inter) LocateRegistry.getRegistry(5000).lookup("barrel");
             StorageBarrel client = new StorageBarrel();
+            client.Setfilename(args[0]);
             String r = server.registerBarrel(client);
             System.out.println(r);
             Signal.handle(new Signal("INT"), sig -> {
@@ -180,6 +191,92 @@ public class StorageBarrel extends UnicastRemoteObject implements Binterface {
             e.printStackTrace();
         }
 
+        // read data file
+        try {
+            File dataFile = new File(args[0]);
+            if (dataFile.exists()) {
+                String title, url, type, token, mUrl, pesquisa;
+                int npesquisa;
+                Scanner scn = new Scanner(dataFile);
+                while (scn.hasNextLine()) {
+                    String data = scn.nextLine();
+                    System.out.println(data + " c");
+                    String[] tokens = data.split(" ");
+
+                    if(tokens[0] != null && tokens[1] != null && tokens[2] != null){
+
+                        switch (tokens[0]){
+                            case "Title":
+                                url = tokens[1];
+                                title = tokens[2];
+                                for (int i = 3; i < tokens.length; ++i)
+                                    title = title.concat(" " + tokens[i]);
+
+                                titles.put(url, title);
+                                //System.out.println(" url " + url + " title " + title );
+                                break;
+                            case "Token":
+                                try {
+                                    url = tokens[1];
+                                    token = tokens[2];
+                                    CopyOnWriteArraySet<String> index = invertedIndex.get(token);
+                                    if (index == null) {
+                                        index = new CopyOnWriteArraySet<>();
+                                        index.add(url);
+                                        invertedIndex.put(token, index);
+                                    } else {
+                                        index.add(url);
+                                    }
+                                } catch (Exception e) {
+                                    throw new RuntimeException(e);
+                                }
+                                break;
+                            case "Url":
+                                url = tokens[1];
+                                mUrl = tokens[2];
+                                CopyOnWriteArraySet<String> value = relevanteIndex.get(mUrl);
+                                if (value == null) {
+                                    CopyOnWriteArraySet<String> set = new CopyOnWriteArraySet<>();
+                                    set.add(url);
+                                    relevanteIndex.put(mUrl, set);
+                                } else {
+                                    value.add(url);
+                                    relevanteIndex.put(mUrl, value);
+                                }
+                                // System.out.println(" url " + url + " token " + mUrl );
+                                break;
+                            case "Search":
+                                pesquisa = tokens[1];
+                                npesquisa = Integer.parseInt(tokens[tokens.length -1]);
+
+                                for (int i = 2; i < tokens.length -1; ++i)
+                                    pesquisa = pesquisa.concat(" " + tokens[i]);
+                                if (searches.get(pesquisa)!=null){
+                                    searches.replace(pesquisa,searches.get(pesquisa),npesquisa);
+                                }
+                                else{
+                                    searches.put(pesquisa,npesquisa);
+                                }
+                                break;
+                        }
+                    }
+                }
+                scn.close();
+            } else {
+                if (!dataFile.createNewFile())
+                    System.exit(0);
+                else
+                    System.out.println("Created file");
+            }
+        } catch (FileNotFoundException e) {
+            System.out.println("An error occurred.");
+            e.printStackTrace();
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+
+
+
         MulticastSocket socket = null;
         try {
             int PORT = 4321;
@@ -195,53 +292,56 @@ public class StorageBarrel extends UnicastRemoteObject implements Binterface {
             while (true) {
                 socket.receive(packet);
                 type = new String(packet.getData(), 0, packet.getLength());
-                myWriter.write(type + "\n");
-
+                boolean test = true;
                 String[] tokens = type.split(" ");
 
-                switch (tokens[0]){
-                    case "Title":
-                        url = tokens[1];
-                        title = tokens[2];
-                        for (int i = 3; i < tokens.length; ++i)
-                            title = title.concat(" " + tokens[i]);
-
-                        titles.put(url, title);
-                        System.out.println(" url " + url + " title " + title );
-                        break;
-                    case "Token":
-                        try {
+                if(tokens[0] != null && tokens[1] != null && tokens[2] != null){
+                    myWriter.write(type + "\n");
+                    switch (tokens[0]){
+                        case "Title":
                             url = tokens[1];
-                            token = tokens[2];
-                            CopyOnWriteArraySet<String> index = invertedIndex.get(token);
-                            if (index == null) {
-                                index = new CopyOnWriteArraySet<>();
-                                index.add(url);
-                                invertedIndex.put(token, index);
-                            } else {
-                                index.add(url);
+                            title = tokens[2];
+                            for (int i = 3; i < tokens.length; ++i)
+                                title = title.concat(" " + tokens[i]);
+
+                            titles.put(url, title);
+                            System.out.println(" url " + url + " title " + title );
+                            break;
+                        case "Token":
+                            try {
+                                url = tokens[1];
+                                token = tokens[2];
+                                CopyOnWriteArraySet<String> index = invertedIndex.get(token);
+                                if (index == null) {
+                                    index = new CopyOnWriteArraySet<>();
+                                    index.add(url);
+                                    invertedIndex.put(token, index);
+                                } else {
+                                    index.add(url);
+                                }
+                            } catch (Exception e) {
+                                throw new RuntimeException(e);
                             }
-                        } catch (Exception e) {
-                            throw new RuntimeException(e);
-                        }
-                        break;
-                    case "Url":
-                        url = tokens[1];
-                        mUrl = tokens[2];
-                        CopyOnWriteArraySet<String> value = relevanteIndex.get(mUrl);
-                        if (value == null) {
-                            CopyOnWriteArraySet<String> set = new CopyOnWriteArraySet<>();
-                            set.add(url);
-                            relevanteIndex.put(mUrl, set);
-                        } else {
-                            value.add(url);
-                            relevanteIndex.put(mUrl, value);
-                        }
-                        // System.out.println(" url " + url + " token " + mUrl );
-                        break;
+                            break;
+                        case "Url":
+                            url = tokens[1];
+                            mUrl = tokens[2];
+                            CopyOnWriteArraySet<String> value = relevanteIndex.get(mUrl);
+                            if (value == null) {
+                                CopyOnWriteArraySet<String> set = new CopyOnWriteArraySet<>();
+                                set.add(url);
+                                relevanteIndex.put(mUrl, set);
+                            } else {
+                                value.add(url);
+                                relevanteIndex.put(mUrl, value);
+                            }
+                            // System.out.println(" url " + url + " token " + mUrl );
+                            break;
+                    }
                 }
+
             }
-            // myWriter.close();
+            //myWriter.close();
         } catch (IOException e) {
             e.printStackTrace();
         } finally {
