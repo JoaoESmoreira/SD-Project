@@ -26,9 +26,7 @@ public class SynchronizedQueue<E> {
     }
 
     public synchronized E pop () throws InterruptedException {
-        // System.out.println("Size: " + this.queue.size());
         while (this.queue.size() == 0) {
-            // System.out.println("==== Empty queue =====");
             wait();
         }
         return this.queue.remove();

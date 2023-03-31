@@ -150,7 +150,7 @@ public class StorageBarrel extends UnicastRemoteObject implements Binterface {
             for (String string:tokens) {
                 CopyOnWriteArraySet<String> set = invertedIndex.get(string);
                 relevantIndexArray.add(set);
-                //System.out.println(set);
+
             }
 
 
@@ -193,7 +193,7 @@ public class StorageBarrel extends UnicastRemoteObject implements Binterface {
                     if(titulo.equals("")) titulo = "No title";
                     String paragrafo = Paragraph.get(urlFromRelevant);
                     if(paragrafo.equals("")) paragrafo = "No Paragraph";
-                    output = output.concat("Enjoy: " + titulo + " " + urlFromRelevant + " "+ paragrafo + "\n");
+                    output = output.concat(" " + titulo + " " + urlFromRelevant + " "+ paragrafo + "\n");
                 }
             } else {
                 output = "No results found";
@@ -277,7 +277,7 @@ public class StorageBarrel extends UnicastRemoteObject implements Binterface {
                                     title = title.concat(" " + tokens[i]);
 
                                 titles.put(url, title);
-                                //System.out.println(" url " + url + " title " + title );
+
                                 break;
                             case "Token":
                                 try {
@@ -307,7 +307,7 @@ public class StorageBarrel extends UnicastRemoteObject implements Binterface {
                                     value.add(url);
                                     relevanteIndex.put(mUrl, value);
                                 }
-                                // System.out.println(" url " + url + " token " + mUrl );
+
                                 break;
                             case "Search":
                                 pesquisa = tokens[1];
@@ -336,7 +336,7 @@ public class StorageBarrel extends UnicastRemoteObject implements Binterface {
                                     type = type.concat(" " + tokens[i]);
 
                                 Paragraph.put(url, type);
-                                //System.out.println(" url " + url + " Para " + type );
+
                                 break;
                         }
                     }
@@ -376,7 +376,7 @@ public class StorageBarrel extends UnicastRemoteObject implements Binterface {
                 boolean test = true;
                 String[] tokens = type.split(" ");
 
-                if(tokens[0] != null && tokens[1] != null && tokens[2] != null){
+                if(Objects.equals(tokens[0], "") && Objects.equals(tokens[1], "") && Objects.equals(tokens[2], "")){
                     myWriter.write(type + "\n");
                     switch (tokens[0]){
                         case "Title":
@@ -386,7 +386,7 @@ public class StorageBarrel extends UnicastRemoteObject implements Binterface {
                                 title = title.concat(" " + tokens[i]);
 
                             titles.put(url, title);
-                            System.out.println(" url " + url + " title " + title );
+
                             break;
                         case "Token":
                             try {
@@ -416,7 +416,7 @@ public class StorageBarrel extends UnicastRemoteObject implements Binterface {
                                 value.add(url);
                                 relevanteIndex.put(mUrl, value);
                             }
-                            // System.out.println(" url " + url + " token " + mUrl );
+
                             break;
 
                         case "Paragraph":
@@ -426,13 +426,13 @@ public class StorageBarrel extends UnicastRemoteObject implements Binterface {
                                 type = type.concat(" " + tokens[i]);
 
                             Paragraph.put(url, type);
-                            //System.out.println(" url " + url + " Para " + type );
+
                             break;
                     }
                 }
 
             }
-            //myWriter.close();
+
         } catch (IOException e) {
             e.printStackTrace();
         } finally {

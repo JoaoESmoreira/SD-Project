@@ -14,14 +14,13 @@ public class SearchModule extends UnicastRemoteObject implements Inter {
 
 	public static Download conection;
     static HashMap<String, String> Regists;
-	//static ArrayList<String> LoggedIN;
+
 
 	static ArrayList<Pair<Binterface, Boolean>> clients;
 
     public SearchModule() throws RemoteException {
 		super();
         Regists = new HashMap<>();
-		//LoggedIN = new ArrayList<>();
 		clients = new ArrayList<>();
 	}
 
@@ -50,12 +49,11 @@ public class SearchModule extends UnicastRemoteObject implements Inter {
 	public void logoutBarrel (Binterface client) throws RemoteException {
 		boolean remove = clients.removeIf(obj -> obj.getFirst().equals(client));
 		if (remove) {
-			System.out.println("\nIT WAS REMOVED\n");
+			System.out.println("\nBarrel removed\n");
 		}
 	}
 
 	public String saySearch(String s) throws RemoteException {
-		//System.out.println(s);
 		String output = "No SearchBarrel Operational";
 		for (Pair<Binterface, Boolean> pair:clients) {
 			if (!pair.getSecond()) {
@@ -133,16 +131,11 @@ public class SearchModule extends UnicastRemoteObject implements Inter {
 			Inter h = new SearchModule();
 		    LocateRegistry.createRegistry(7000).rebind("ALGO", h);
 
-			System.out.println("Search Module ready.");
 
 		} catch (RemoteException re) {
 			System.out.println("Exception in main: " + re);
 		} 
-		//catch (MalformedURLException me){
-		//	System.out.println("Exception : " + me);
-		 //catch (NotBoundException ne){
-			//System.out.println("in main: " + ne);
-		//}
+
 		try{
 			conection = (Download) LocateRegistry.getRegistry(8000).lookup("DownloadNameServer");
 
@@ -154,7 +147,7 @@ public class SearchModule extends UnicastRemoteObject implements Inter {
 		try {
 			SearchModule con = new SearchModule();
 			LocateRegistry.createRegistry(5000).rebind("barrel", con);
-			System.out.println("Conection to barrels ");
+			System.out.println("Search Module ready.");
 		} catch (Exception re) {
 			System.out.println("Exception in HelloImpl.main: " + re);
 		}

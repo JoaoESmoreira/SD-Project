@@ -53,7 +53,6 @@ public class Url {
 
         try {
 
-
             if ((url = urlQueue.pop()) == null) {
                 System.out.println("Null url");
                 return true;
@@ -95,7 +94,7 @@ public class Url {
             String token;
             while (tokens.hasMoreElements() && countTokens++ < 100) {
                 token = tokens.nextToken().toLowerCase();
-                 // try {
+
                      if(token.equals("")){
                      token = "No_token";
                      }
@@ -104,10 +103,6 @@ public class Url {
                      packet = new DatagramPacket(buffer, buffer.length, group, PORT);
                      socket.send(packet);
 
-                 // } catch (Exception e) {
-                 //     throw new RuntimeException(e);
-                 // }
-                 // System.out.println(token);
             }
 
             System.out.println("Size: " + urlSet.size() + " Capacity: " + getMaxLinks());

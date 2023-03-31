@@ -30,7 +30,6 @@ public class DownloadServer extends UnicastRemoteObject implements Download {
     }
 
     public void GetURL(String s) throws RemoteException, InterruptedException {
-        System.out.println("Got the URL: "+s);
 
         url.addUrl(s);
     }
