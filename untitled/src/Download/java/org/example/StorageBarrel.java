@@ -22,6 +22,8 @@ public class StorageBarrel extends UnicastRemoteObject implements Binterface {
     public static ConcurrentHashMap<String, CopyOnWriteArraySet<String>> invertedIndex;
     public static HashMap<String, String> titles;
 
+    public static HashMap<String, String> Paragraph;
+
     public static HashMap<String, Integer> searches;
     public static ConcurrentHashMap<String, CopyOnWriteArraySet<String>> relevanteIndex;
 
@@ -35,6 +37,7 @@ public class StorageBarrel extends UnicastRemoteObject implements Binterface {
         relevanteIndex = new ConcurrentHashMap<>();
         searches = new HashMap<>();
         Regists = new HashMap<>();
+        Paragraph = new HashMap<>();
 
     }
 
@@ -94,7 +97,7 @@ public class StorageBarrel extends UnicastRemoteObject implements Binterface {
         String output = "Most searched:\n";
 
         if(searches.isEmpty()){
-            return "No searches done";
+            return "No searches done\n";
         }
 
         List<Map.Entry<String, Integer>> list = new ArrayList<>(searches.entrySet());
@@ -127,9 +130,9 @@ public class StorageBarrel extends UnicastRemoteObject implements Binterface {
         FileWriter Writer;
         try {
             Writer = new FileWriter(filename,true);
-        
-        
-        
+
+
+
             if (searches.get(search)!=null){
                 searches.replace(search,searches.get(search),searches.get(search)+1);
             }
@@ -138,20 +141,20 @@ public class StorageBarrel extends UnicastRemoteObject implements Binterface {
             }
             String msgsearch = "Search " + search + " " + searches.get(search);
             Writer.write(msgsearch + "\n");
-            
+
 
             String output = "";
             String[] tokens = search.split(" ");
-    
+
             ArrayList<CopyOnWriteArraySet<String>> relevantIndexArray = new ArrayList<>();
             for (String string:tokens) {
                 CopyOnWriteArraySet<String> set = invertedIndex.get(string);
                 relevantIndexArray.add(set);
                 //System.out.println(set);
             }
-    
-    
-    
+
+
+
             for (int i = 1; i < relevantIndexArray.size(); ++i) {
                 if(relevantIndexArray.get(i)==null){
                     try {
@@ -163,29 +166,44 @@ public class StorageBarrel extends UnicastRemoteObject implements Binterface {
                 }
                 relevantIndexArray.get(0).retainAll(relevantIndexArray.get(i));
             }
-    
+
             ArrayList<String> relevantUrl = new ArrayList<>();
             if (relevantIndexArray.get(0) != null) {
                 relevantUrl = new ArrayList<>(relevantIndexArray.get(0));
-                relevantUrl.sort((s, t1) -> relevanteIndex.get(s).size() > relevanteIndex.get(t1).size() ? -1 : (relevanteIndex.get(s).size() > relevanteIndex.get(t1).size()) ? 1 : 0);
+
+                relevantUrl.sort(new Comparator<String>() {
+                    @Override
+                    public int compare(String s, String t1) {
+                        if (relevanteIndex.get(s) != null && relevanteIndex.get(t1) != null) {
+                            return relevanteIndex.get(s).size() > relevanteIndex.get(t1).size() ? -1 : (relevanteIndex.get(s).size() > relevanteIndex.get(t1).size()) ? 1 : 0;
+                        } else if (relevanteIndex.get(s) == null) {
+                            return 1;
+                        } else if (relevanteIndex.get(t1) == null) {
+                            return -1;
+                        }
+                        return 0;
+                    }
+                });
             }
-    
+
             if (relevantUrl.size() > 0) {
                 for (String urlFromRelevant:relevantUrl) {
                     System.out.println(urlFromRelevant);
-                    output = output.concat("Enjoy: " + urlFromRelevant + "\n");
+                    String titulo = titles.get(urlFromRelevant);
+                    if(titulo.equals("")) titulo = "No title";
+                    String paragrafo = Paragraph.get(urlFromRelevant);
+                    if(paragrafo.equals("")) paragrafo = "No Paragraph";
+                    output = output.concat("Enjoy: " + titulo + " " + urlFromRelevant + " "+ paragrafo + "\n");
                 }
             } else {
                 output = "No results found";
             }
 
-        
             Writer.close();
             return output;
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
-        
     }
 
 
@@ -310,6 +328,16 @@ public class StorageBarrel extends UnicastRemoteObject implements Binterface {
 
                                 Regists.putIfAbsent(username, pass);
                                 break;
+
+                            case "Paragraph":
+                                url = tokens[1];
+                                type = tokens[2];
+                                for (int i = 3; i < tokens.length; ++i)
+                                    type = type.concat(" " + tokens[i]);
+
+                                Paragraph.put(url, type);
+                                //System.out.println(" url " + url + " Para " + type );
+                                break;
                         }
                     }
                 }
@@ -389,6 +417,16 @@ public class StorageBarrel extends UnicastRemoteObject implements Binterface {
                                 relevanteIndex.put(mUrl, value);
                             }
                             // System.out.println(" url " + url + " token " + mUrl );
+                            break;
+
+                        case "Paragraph":
+                            url = tokens[1];
+                            type = tokens[2];
+                            for (int i = 3; i < tokens.length; ++i)
+                                type = type.concat(" " + tokens[i]);
+
+                            Paragraph.put(url, type);
+                            //System.out.println(" url " + url + " Para " + type );
                             break;
                     }
                 }

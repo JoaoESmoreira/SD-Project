@@ -75,6 +75,22 @@ public class Url {
             packet = new DatagramPacket(buffer, buffer.length, group, PORT);
             socket.send(packet);
 
+            Element firstParagraph = doc.select("p").first();
+            String text;
+            if (firstParagraph != null) {
+                text = firstParagraph.text();
+                if (text.equals("")) {
+                    text = "No_paragraph";
+                }
+            } else {
+                text = "No_paragraph";
+            }
+            message = "Paragraph" + " " + url + " " + text;
+
+            buffer = message.getBytes();
+            packet = new DatagramPacket(buffer, buffer.length, group, PORT);
+            socket.send(packet);
+
             int countTokens = 0;
             String token;
             while (tokens.hasMoreElements() && countTokens++ < 100) {
