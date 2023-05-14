@@ -1,0 +1,9 @@
+.my-3 {
+    background: #ff7042;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: left;
+    padding: 4rem;
+    padding-top: 0;
+}
