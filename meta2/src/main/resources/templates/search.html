@@ -12,6 +12,17 @@
       </div>
       <button type="submit">Search</button>
     </form>
-    <a th:href="@{/login}" class="btn btn-primary">Login</a>
+
+    <form th:action="@{/pointed-links}">
+      <button type="submit">Pointed Links</button>
+    </form>
+
+    <form  th:action="@{/login}" method="post">
+      <button type="submit"> Login</button>
+    </form>
+
+    <form  th:action="@{/logout}" method="post">
+      <button type="submit"> Logout</button>
+    </form>
   </body>
 </html>

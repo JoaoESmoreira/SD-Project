@@ -78,17 +78,12 @@ public class StorageBarrel extends UnicastRemoteObject implements Binterface {
 
         if(Regists.get(username)== null){
             output = "Need to register";
-        } else{
-            if(Objects.equals(Regists.get(username), password)){
-                output =  "LOGGED IN";
-            }
-            else {
-                output = "Wrong password";
-            }
+        } else if (Objects.equals(Regists.get(username), password)) {
+            output =  "LOGGED IN";
+        }  else {
+            output = "Wrong password";
         }
-
         return output;
-
     }
 
     public String GetInfos() throws RemoteException{
