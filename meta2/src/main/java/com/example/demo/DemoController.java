@@ -87,20 +87,17 @@ public class DemoController {
     @GetMapping("/register")
     public String RegistForm(Model model) {
         model.addAttribute("Registp", new Loginp());
-        model.addAttribute("error", false);
         return "register";
     }
 
-    @PostMapping("/register")
-    public String Register(@ModelAttribute Loginp loginp, Model model) {
+    @PostMapping("/register-msg")
+    public String Register(@ModelAttribute Loginp loginp, Model model) throws RemoteException {
 
 
-        if (loginp.getUsername().equals("user") && loginp.getPassword().equals("password")) {
-            return "redirect:/";
-        } else {
-            model.addAttribute("error", true);
-            return "register";
-        }
+        String s = loginService.getConnection().Register(loginp.getUsername(),loginp.getPassword());
+        model.addAttribute("message", s);
+        System.out.println(s);
+        return "/register_msg";
 
 
     }
