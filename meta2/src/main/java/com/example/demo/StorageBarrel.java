@@ -20,9 +20,7 @@ import java.util.concurrent.CopyOnWriteArraySet;
 public class StorageBarrel extends UnicastRemoteObject implements Binterface {
     public static ConcurrentHashMap<String, CopyOnWriteArraySet<String>> invertedIndex;
     public static HashMap<String, String> titles;
-
     public static HashMap<String, String> Paragraph;
-
     public static HashMap<String, Integer> searches;
     public static ConcurrentHashMap<String, CopyOnWriteArraySet<String>> relevanteIndex;
 
@@ -165,6 +163,8 @@ public class StorageBarrel extends UnicastRemoteObject implements Binterface {
             if (relevantIndexArray.get(0) != null) {
                 relevantUrl = new ArrayList<>(relevantIndexArray.get(0));
 
+
+                //ERRO AQUI DEVEZ EM QUANDO??
                 relevantUrl.sort(new Comparator<String>() {
                     @Override
                     public int compare(String s, String t1) {
@@ -367,10 +367,10 @@ public class StorageBarrel extends UnicastRemoteObject implements Binterface {
             while (true) {
                 socket.receive(packet);
                 type = new String(packet.getData(), 0, packet.getLength());
-                boolean test = true;
                 String[] tokens = type.split(" ");
+                System.out.println(type);
 
-                if(!Objects.equals(tokens[0], "") && !Objects.equals(tokens[1], "") && !Objects.equals(tokens[2], "")){
+                if(tokens.length > 2 && !Objects.equals(tokens[0], "") && !Objects.equals(tokens[1], "") && !Objects.equals(tokens[2], "")){
                     myWriter.write(type + "\n");
                     switch (tokens[0]){
                         case "Title":
@@ -380,7 +380,6 @@ public class StorageBarrel extends UnicastRemoteObject implements Binterface {
                                 title = title.concat(" " + tokens[i]);
 
                             titles.put(url, title);
-
                             break;
                         case "Token":
                             try {
@@ -410,9 +409,7 @@ public class StorageBarrel extends UnicastRemoteObject implements Binterface {
                                 value.add(url);
                                 relevanteIndex.put(mUrl, value);
                             }
-
                             break;
-
                         case "Paragraph":
                             url = tokens[1];
                             type = tokens[2];
@@ -420,13 +417,10 @@ public class StorageBarrel extends UnicastRemoteObject implements Binterface {
                                 type = type.concat(" " + tokens[i]);
 
                             Paragraph.put(url, type);
-
                             break;
                     }
                 }
-
             }
-
         } catch (IOException e) {
             e.printStackTrace();
         } finally {
