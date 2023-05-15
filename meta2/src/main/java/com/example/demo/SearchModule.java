@@ -73,14 +73,17 @@ public class SearchModule extends UnicastRemoteObject implements Inter {
 	}
 
 	public String saySearch(String s) throws RemoteException {
+
 		String output = "No SearchBarrel Operational";
 		for (Pair<Binterface, Boolean> pair:clients) {
+			System.out.println(s);
 			if (!pair.getSecond()) {
 				pair.setSecond(true);
 				output = pair.getFirst().getSearch(s);
 				pair.setSecond(false);
 			}
 		}
+		System.out.println(output);
 		return output;
 	}
 
@@ -169,6 +172,17 @@ public class SearchModule extends UnicastRemoteObject implements Inter {
 			System.out.println("Search Module ready.");
 		} catch (Exception re) {
 			System.out.println("Exception in HelloImpl.main: " + re);
+		}
+
+		try {
+
+			SearchModule loginService = new SearchModule();
+			LocateRegistry.createRegistry(6000).rebind("LoginService", loginService);
+
+			System.out.println("Servidor RMI pronto para receber conexões...");
+		} catch (Exception e) {
+			System.err.println("Erro no servidor RMI: " + e.toString());
+			e.printStackTrace();
 		}
 
 
