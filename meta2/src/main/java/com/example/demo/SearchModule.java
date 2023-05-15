@@ -126,7 +126,6 @@ public class SearchModule extends UnicastRemoteObject implements Inter {
 			}
 		}
 		return output;
-
     }
 
 
