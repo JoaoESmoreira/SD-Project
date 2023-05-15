@@ -3,6 +3,10 @@ body{
     font-size: 40px;
 }
 
+pre {
+    white-space: pre-wrap;
+}
+
 .my-3 {
     background: #ff7042;
     display: flex;

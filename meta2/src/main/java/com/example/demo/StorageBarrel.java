@@ -377,7 +377,7 @@ public class StorageBarrel extends UnicastRemoteObject implements Binterface {
                 boolean test = true;
                 String[] tokens = type.split(" ");
 
-                if(!Objects.equals(tokens[0], "") && !Objects.equals(tokens[1], "") && !Objects.equals(tokens[2], "")){
+                if(tokens.length>=3 && !Objects.equals(tokens[0], "") && !Objects.equals(tokens[1], "") && !Objects.equals(tokens[2], "")){
                     myWriter.write(type + "\n");
                     switch (tokens[0]){
                         case "Title":
