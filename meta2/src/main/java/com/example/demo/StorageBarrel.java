@@ -170,6 +170,8 @@ public class StorageBarrel extends UnicastRemoteObject implements Binterface {
             if (relevantIndexArray.get(0) != null) {
                 relevantUrl = new ArrayList<>(relevantIndexArray.get(0));
 
+
+                //ERRO AQUI DEVEZ EM QUANDO??
                 relevantUrl.sort(new Comparator<String>() {
                     @Override
                     public int compare(String s, String t1) {
