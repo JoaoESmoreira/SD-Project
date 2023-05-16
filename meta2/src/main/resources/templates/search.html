@@ -1,32 +1,35 @@
 <!DOCTYPE HTML>
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
-  <title>Getting Started: Serving Web Content</title>
-  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <title>Gogool</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <link th:href="@{/style.css}" rel="stylesheet" />
 </head>
-  <body>
-    <form th:action="@{/search-result}" th:object="${search}" method="post">
-      <div>
-        <label>Do A Search</label>
-        <input type="text" th:field="*{search}">
-      </div>
-      <button type="submit">Search</button>
-    </form>
+    <body>
+        <div class="search-div">
+          <form th:action="@{/search-result}" th:object="${search}" method="post">
+            <h1>Gogool</h1>
+            <input type="text" th:field="*{search}">
+            <button type="submit">Search</button>
+          </form>
+        </div>
 
-    <form th:action="@{/pointed-links}">
-      <button type="submit">Pointed Links</button>
-    </form>
+        <div class="search-buttoms">
+          <form th:action="@{/pointed-links}">
+            <button type="submit">Pointed Links</button>
+          </form>
 
-    <form  th:action="@{/login}" method="post">
-      <button type="submit"> Login</button>
-    </form>
+          <form  th:action="@{/login}" method="post">
+            <button type="submit"> Login</button>
+          </form>
 
-    <form  th:action="@{/logout}" method="post">
-      <button type="submit"> Logout</button>
-    </form>
+          <form  th:action="@{/logout}" method="post">
+            <button type="submit"> Logout</button>
+          </form>
 
-    <form  th:action="@{/register }" method="post">
-      <button type="submit"> Register</button>
-    </form>
-  </body>
+          <form  th:action="@{/register }" method="post">
+            <button type="submit"> Register</button>
+          </form>
+        </div>
+    </body>
 </html>
