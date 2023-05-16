@@ -69,8 +69,8 @@ public class Client {
 					System.out.print("URL: ");
 					String link = sc.next();
 					sc.nextLine();
-					String message = h.pointToLink(link);
-					System.out.println(message);
+					// ArrayList<UrlModel> message = h.pointToLink(link);
+					// System.out.println(message);
 				} else if ("5".equals(choice) ) {
 					String message = h.Stats();
 					System.out.println(message);

@@ -33,11 +33,6 @@ public class SearchModule extends UnicastRemoteObject implements Inter {
 		return bean;
 	}
 
-	public String saySomething(String msg) throws RemoteException {
-		System.out.println("MSG: " + msg);
-		return "MSG: " + msg;
-	}
-
     public SearchModule() throws RemoteException {
 		super();
         Regists = new HashMap<>();
@@ -89,8 +84,8 @@ public class SearchModule extends UnicastRemoteObject implements Inter {
 		return output;
 	}
 
-	public String pointToLink(String link) throws RemoteException {
-		String output = "No SearchBarrel Operational";
+	public ArrayList<UrlModel> pointToLink(String link) throws RemoteException {
+		ArrayList<UrlModel> output = new ArrayList<>();
 		for (Pair<Binterface, Boolean> pair:clients) {
 			if (!pair.getSecond()) {
 				pair.setSecond(true);
@@ -182,7 +177,7 @@ public class SearchModule extends UnicastRemoteObject implements Inter {
 
 			System.out.println("Servidor RMI pronto para receber conexões...");
 		} catch (Exception e) {
-			System.err.println("Erro no servidor RMI: " + e.toString());
+			System.err.println("Erro no servidor RMI: " + e);
 			e.printStackTrace();
 		}
 

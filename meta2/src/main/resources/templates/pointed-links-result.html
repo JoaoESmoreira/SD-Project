@@ -1,15 +1,28 @@
 <!DOCTYPE HTML>
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
-  <title>Getting Started: Serving Web Content</title>
-  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
-  <link href="/style.css" rel="stylesheet">
+    <title>Getting Started: Serving Web Content</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+    <link href="/style.css" rel="stylesheet">
 </head>
-  <body>
-    <div class="my-3">
-      <h2>Result</h2>
-      <p><strong>ID:</strong> <span th:text="${url}"></span></p>
-    </div>
+<body>
+    <table>
+        <thead>
+        <tr>
+            <td><b>URL</b></td>
+        </tr>
+        </thead>
+        <tbody>
+        <tr
+                th:each="url, iStat : ${pointedLinks}"
+                th:style="${iStat.odd}? 'font-weight: bold;'"
+        >
+            <td th:text="${url.url}"></td>
+        </tr>
+        </tbody>
+    </table>
+
+
     <a th:href="@{/search}">Get back</a>
-  </body>
+</body>
 </html>

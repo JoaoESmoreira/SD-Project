@@ -13,8 +13,6 @@ import org.springframework.web.bind.annotation.PostMapping;
 
 import java.rmi.RemoteException;
 import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
 
 
 @Controller
@@ -40,14 +38,6 @@ public class DemoController {
         return "searchresult";
     }
 
-    @GetMapping("/login")
-    public String loginForm() {
-        // model.addAttribute("loginp", new Loginp());
-        // model.addAttribute("error", false);
-
-        return "login";
-    }
-
     @GetMapping("/pointed-links")
     public String pointedToLink(Model model) {
         model.addAttribute("url", new UrlModel());
@@ -56,8 +46,8 @@ public class DemoController {
 
     @PostMapping("/pointed-links-result")
     public String pointedToLinkResult(UrlModel url, Model model) throws RemoteException {
-        String s = loginService.getConnection().pointToLink(url.getUrl());
-        model.addAttribute("url", s);
+        ArrayList<UrlModel> pointedLinksResult = loginService.getConnection().pointToLink(url.getUrl());
+        model.addAttribute("pointedLinks", pointedLinksResult);
         return "pointed-links-result";
     }
 
@@ -65,6 +55,11 @@ public class DemoController {
     public String RegistForm(Model model) {
         model.addAttribute("Registp", new Loginp());
         return "register";
+    }
+
+    @GetMapping("/login")
+    public String loginForm() {
+        return "login";
     }
 
     @PostMapping("/register-msg")

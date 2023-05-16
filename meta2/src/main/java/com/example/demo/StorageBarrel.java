@@ -199,12 +199,12 @@ public class StorageBarrel extends UnicastRemoteObject implements Binterface {
     }
 
 
-    public String getPointToLink (String point) throws RemoteException {
+    public ArrayList<UrlModel> getPointToLink(String point) throws RemoteException {
         CopyOnWriteArraySet<String> aux = relevanteIndex.get(point);
-        String output = "";
+        ArrayList<UrlModel> output = new ArrayList<>();
         if (aux != null) {
             for (String str : aux) {
-                output = output.concat("Poited by: " + str + "\n");
+                output.add(new UrlModel(str, "No Info", "No Info"));
             }
         }
         return output;
