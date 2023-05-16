@@ -2,6 +2,7 @@ package com.example.demo;
 
 // import org.example.Download;
 
+import com.example.demo.model.UrlModel;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
 import org.springframework.remoting.rmi.RmiProxyFactoryBean;
@@ -72,9 +73,10 @@ public class SearchModule extends UnicastRemoteObject implements Inter {
 		}
 	}
 
-	public String saySearch(String s) throws RemoteException {
+	public ArrayList<UrlModel> saySearch(String s) throws RemoteException {
 
-		String output = "No SearchBarrel Operational";
+		//String output = "No SearchBarrel Operational";
+		ArrayList<UrlModel> output = new ArrayList<>();
 		for (Pair<Binterface, Boolean> pair:clients) {
 			System.out.println(s);
 			if (!pair.getSecond()) {
@@ -83,7 +85,7 @@ public class SearchModule extends UnicastRemoteObject implements Inter {
 				pair.setSecond(false);
 			}
 		}
-		System.out.println(output);
+		// System.out.println(output);
 		return output;
 	}
 

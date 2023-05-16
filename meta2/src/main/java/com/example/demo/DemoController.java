@@ -2,7 +2,7 @@ package com.example.demo;
 
 import com.example.demo.model.Connection;
 import com.example.demo.model.Search;
-import com.example.demo.model.Url;
+import com.example.demo.model.UrlModel;
 import com.example.demo.model.Loginp;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -12,6 +12,9 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 
 import java.rmi.RemoteException;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
 
 
 @Controller
@@ -32,8 +35,8 @@ public class DemoController {
 
     @PostMapping("/search-result")
     public String searchResult(@ModelAttribute Search search, Model model) throws RemoteException {
-        String s = loginService.getConnection().saySearch(search.getSearch());
-        model.addAttribute("search", s);
+        ArrayList<UrlModel> searchResult = loginService.getConnection().saySearch(search.getSearch());
+        model.addAttribute("search", searchResult);
         return "searchresult";
     }
 
@@ -47,12 +50,12 @@ public class DemoController {
 
     @GetMapping("/pointed-links")
     public String pointedToLink(Model model) {
-        model.addAttribute("url", new Url());
+        model.addAttribute("url", new UrlModel());
         return "pointed-links";
     }
 
     @PostMapping("/pointed-links-result")
-    public String pointedToLinkResult(Url url, Model model) throws RemoteException {
+    public String pointedToLinkResult(UrlModel url, Model model) throws RemoteException {
         String s = loginService.getConnection().pointToLink(url.getUrl());
         model.addAttribute("url", s);
         return "pointed-links-result";

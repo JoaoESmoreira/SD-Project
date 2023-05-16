@@ -6,10 +6,27 @@
   <link href="/style.css" rel="stylesheet">
 </head>
   <body>
-    <div class="my-3">
-      <h2>Result</h2>
-      <p><strong>ID:</strong> <pre th:text="${search}"></pre></p>
-    </div>
+    <table>
+      <thead>
+      <tr>
+        <td><b>URL</b></td>
+        <td><b>TITLE</b></td>
+        <td><b>PARAGRAPH</b></td>
+      </tr>
+      </thead>
+      <tbody>
+      <tr
+              th:each="url, iStat : ${search}"
+              th:style="${iStat.odd}? 'font-weight: bold;'"
+      >
+        <td  th:text="${url.url}"></td>
+        <td th:text="${url.title}"></td>
+        <td th:text="${url.paragraph}"></td>
+      </tr>
+      </tbody>
+    </table>
+
+
     <a th:href="@{/search}">Get back</a>
   </body>
 </html>

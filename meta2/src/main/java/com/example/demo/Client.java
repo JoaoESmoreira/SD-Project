@@ -1,6 +1,9 @@
 package com.example.demo;
 
+import com.example.demo.model.UrlModel;
+
 import java.rmi.registry.LocateRegistry;
+import java.util.ArrayList;
 import java.util.Scanner;
 
 public class Client {
@@ -36,8 +39,8 @@ public class Client {
 					System.out.print("Search: ");
 					String search = sc.nextLine();
 
-					String message = h.saySearch(search);
-					System.out.println(message);
+					// ArrayList<UrlModel> message = h.saySearch(search);
+					// System.out.println(message);
 				} else if ("3".equals(choice) && !flag) {
 					System.out.print("Username: ");
 					String username = sc.next();

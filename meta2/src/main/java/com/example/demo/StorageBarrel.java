@@ -1,5 +1,6 @@
 package com.example.demo;
 
+import com.example.demo.model.UrlModel;
 import sun.misc.Signal;
 
 import java.io.File;
@@ -111,19 +112,14 @@ public class StorageBarrel extends UnicastRemoteObject implements Binterface {
             if(con>10) break;
 
         }
-
-
-
         return output;
     }
 
-    public String getSearch(String search) throws RemoteException {
+    public ArrayList<UrlModel> getSearch(String search) throws RemoteException {
 
         FileWriter Writer;
         try {
             Writer = new FileWriter(filename,true);
-
-
 
             if (searches.get(search)!=null){
                 searches.replace(search,searches.get(search),searches.get(search)+1);
@@ -134,8 +130,8 @@ public class StorageBarrel extends UnicastRemoteObject implements Binterface {
             String msgsearch = "Search " + search + " " + searches.get(search);
             Writer.write(msgsearch + "\n");
 
-
-            String output = "";
+            ArrayList<UrlModel> out = new ArrayList<>();
+            // String output = "";
             String[] tokens = search.split(" ");
 
             ArrayList<CopyOnWriteArraySet<String>> relevantIndexArray = new ArrayList<>();
@@ -145,8 +141,6 @@ public class StorageBarrel extends UnicastRemoteObject implements Binterface {
 
             }
 
-
-
             for (int i = 1; i < relevantIndexArray.size(); ++i) {
                 if(relevantIndexArray.get(i)==null){
                     try {
@@ -154,7 +148,7 @@ public class StorageBarrel extends UnicastRemoteObject implements Binterface {
                     } catch (IOException e) {
                         throw new RuntimeException(e);
                     }
-                    return "No results found";
+                    return out;
                 }
                 relevantIndexArray.get(0).retainAll(relevantIndexArray.get(i));
             }
@@ -162,7 +156,6 @@ public class StorageBarrel extends UnicastRemoteObject implements Binterface {
             ArrayList<String> relevantUrl = new ArrayList<>();
             if (relevantIndexArray.get(0) != null) {
                 relevantUrl = new ArrayList<>(relevantIndexArray.get(0));
-
 
                 //ERRO AQUI DEVEZ EM QUANDO??
                 relevantUrl.sort(new Comparator<String>() {
@@ -183,18 +176,23 @@ public class StorageBarrel extends UnicastRemoteObject implements Binterface {
             if (relevantUrl.size() > 0) {
                 for (String urlFromRelevant:relevantUrl) {
                     System.out.println(urlFromRelevant);
+
                     String titulo = titles.get(urlFromRelevant);
                     if(titulo.equals("")) titulo = "No title";
                     String paragrafo = Paragraph.get(urlFromRelevant);
                     if(paragrafo.equals("")) paragrafo = "No Paragraph";
-                    output = output.concat(" " + titulo + " " + urlFromRelevant + " "+ paragrafo + "\n");
+
+                    UrlModel auxUrl = new UrlModel(urlFromRelevant, titulo, paragrafo);
+                    out.add(auxUrl);
+
+                    // output = output.concat(" " + titulo + " " + urlFromRelevant + " "+ paragrafo + "\n");
                 }
             } else {
-                output = "No results found";
+                out = new ArrayList<>();
             }
 
             Writer.close();
-            return output;
+            return out;
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
