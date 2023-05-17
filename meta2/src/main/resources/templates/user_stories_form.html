@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <title>User Stories Form</title>
+</head>
+<body>
+<h2>Enter HackerNews Username</h2>
+<form th:action="@{/user-urls}" method="post">
+  <div>
+    <label for="username">Username:</label>
+    <input type="text" id="username" name="username">
+  </div>
+  <button type="submit">Submit</button>
+</form>
+<a th:href="@{/search}">Home</a>
+</body>
+</html>
