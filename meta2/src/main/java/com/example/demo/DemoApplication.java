@@ -17,11 +17,16 @@ import java.rmi.registry.Registry;
 public class DemoApplication {
 	@Autowired
 	private Connection loginService;
-	private static final String RMI_HOST = "localhost";
+	private static String RMI_HOST = "localhost";
 	private static final int RMI_PORT = 6000;
 	private static final String RMI_NAME = "LoginService";
 
 	public static void main(String[] args) {
+		if (args.length != 1) {
+			System.out.println("Wrong number of arguments.");
+			System.exit(0);
+		}
+		RMI_HOST = args[0];
 		SpringApplication.run(DemoApplication.class, args);
 	}
 
