@@ -107,6 +107,29 @@ public class DemoController {
         }
     }
 
+    @PostMapping("/list")
+    public String hackerNewsTopStories( Model model) throws RemoteException {
+
+        RestTemplate restTemplate = new RestTemplate();
+
+        String url = "https://hacker-news.firebaseio.com/v0/topstories.json?auth=pretty";
+        int[] storyIds = restTemplate.getForObject(url, int[].class);
+        List<HackerNewsItemRecord> topStories = new ArrayList<>();
+        List<String> urls = new ArrayList<>();
+        for (int i = 0; i < 10 && i < storyIds.length; i++) {
+            String urlstory = "https://hacker-news.firebaseio.com/v0/item/" + storyIds[i] + ".json?auth=pretty";
+            HackerNewsItemRecord story = restTemplate.getForObject(urlstory, HackerNewsItemRecord.class);
+            topStories.add(story);
+            if (story != null) {
+                loginService.getConnection().sayURL(story.url());
+                urls.add(story.url());
+            }
+        }
+        model.addAttribute("stories", urls);
+        return "top10stories";
+
+    }
+
 
 
 }
