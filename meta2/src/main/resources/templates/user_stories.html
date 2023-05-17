@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <title>User Stories</title>
+</head>
+<body>
+<h2>User's Submitted Stories</h2>
+<table>
+  <tr>
+    <th>URL</th>
+  </tr>
+  <tr th:each="story : ${stories}">
+    <td th:text="${story}"></td>
+  </tr>
+</table>
+<a th:href="@{/search}">Home</a>
+</body>
+</html>

@@ -73,16 +73,24 @@ public class SearchModule extends UnicastRemoteObject implements Inter {
 
 		//String output = "No SearchBarrel Operational";
 		ArrayList<UrlModel> output = new ArrayList<>();
+		ArrayList<UrlModel> outputf = new ArrayList<>();
+		int cont=0;
 		for (Pair<Binterface, Boolean> pair:clients) {
 			System.out.println(s);
 			if (!pair.getSecond()) {
 				pair.setSecond(true);
-				output = pair.getFirst().getSearch(s);
+				if(cont==0){
+					outputf = pair.getFirst().getSearch(s);
+				}
+				else {
+					output = pair.getFirst().getSearch(s);
+				}
 				pair.setSecond(false);
 			}
+			cont++;
 		}
 		// System.out.println(output);
-		return output;
+		return outputf;
 	}
 
 	public ArrayList<UrlModel> pointToLink(String link) throws RemoteException {
@@ -129,12 +137,21 @@ public class SearchModule extends UnicastRemoteObject implements Inter {
 
 	public String Stats() throws RemoteException {
 		String output = "No SearchBarrel Operational\n";
+		String outputf = "No SearchBarrel Operational\n";
+		int cont=0;
 		for (Pair<Binterface, Boolean> pair:clients) {
 			if (!pair.getSecond()) {
 				pair.setSecond(true);
+				if(cont==0){
+					output = pair.getFirst().GetInfos();
+				}
+				else{
+					outputf = pair.getFirst().GetInfos();
+				}
 				output = pair.getFirst().GetInfos();
 				pair.setSecond(false);
 			}
+			cont++;
 		}
 		output = output.concat("Number of Active Barrels: " + clients.size() + "\n" );
 		output = output.concat("Number of Active Downloaders: " + conection.getNdownloaders() + "\n" );

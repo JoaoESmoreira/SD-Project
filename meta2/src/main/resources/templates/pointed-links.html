@@ -3,15 +3,22 @@
 <head>
     <title>Getting Started: Serving Web Content</title>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+    <link th:href="@{/stylePointedLink.css}" rel="stylesheet" />
 </head>
 <body>
-    <form th:action="@{/pointed-links-result}" th:object="${url}" method="post">
-        <div>
-            <label>Put a url to get a pointed link</label>
-            <input type="text" th:field="*{url}">
-        </div>
-        <button type="submit">Search</button>
-    </form>
+    <div class="pointed-style">
+        <form th:action="@{/pointed-links-result}" th:object="${url}" method="post">
+            <div class="pointed-forms">
+                <h1>Put a url to get a pointed link</h1>
+            </div>
+            <div class="pointed-forms">
+                <input type="text" th:field="*{url}">
+            </div>
+            <div class="pointed-forms">
+                <button type="submit">Search</button>
+            </div>
+        </form>
+    </div>
 
     <a th:href="@{/search}">Get back</a>
 </body>

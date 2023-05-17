@@ -1,0 +1,26 @@
+body {
+    /*background: #9580ff;*/
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+.pointed-style {
+    padding: 180px;
+}
+.pointed-forms h1 {
+    font-size: 30px;
+    margin: 0px;
+}
+.pointed-forms input {
+    width: 200px;
+    height: 20px;
+}
+.pointed-forms {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px;
+}
+

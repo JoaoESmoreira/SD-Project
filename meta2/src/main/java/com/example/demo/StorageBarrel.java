@@ -161,15 +161,22 @@ public class StorageBarrel extends UnicastRemoteObject implements Binterface {
                 relevantUrl.sort(new Comparator<String>() {
                     @Override
                     public int compare(String s, String t1) {
-                        if (relevanteIndex.get(s) != null && relevanteIndex.get(t1) != null) {
-                            return relevanteIndex.get(s).size() > relevanteIndex.get(t1).size() ? -1 : (relevanteIndex.get(s).size() > relevanteIndex.get(t1).size()) ? 1 : 0;
-                        } else if (relevanteIndex.get(s) == null) {
-                            return 1;
-                        } else if (relevanteIndex.get(t1) == null) {
-                            return -1;
+                        CopyOnWriteArraySet<String> sList = relevanteIndex.get(s);
+                        CopyOnWriteArraySet<String> tList = relevanteIndex.get(t1);
+
+                        if (sList != null && tList != null) {
+                            return Integer.compare(sList.size(), tList.size());
+                        } else if (sList == null) {
+                            if (tList == null) {
+                                return 0; // Both sList and tList are null, consider them equal
+                            } else {
+                                return 1; // sList is null, tList is not, so s is considered greater
+                            }
+                        } else {
+                            return -1; // tList is null, sList is not, so s is considered smaller
                         }
-                        return 0;
                     }
+
                 });
             }
 
@@ -178,9 +185,9 @@ public class StorageBarrel extends UnicastRemoteObject implements Binterface {
                     System.out.println(urlFromRelevant);
 
                     String titulo = titles.get(urlFromRelevant);
-                    if(titulo.equals("")) titulo = "No title";
+                    //if(titulo.equals("")) titulo = "No title";
                     String paragrafo = Paragraph.get(urlFromRelevant);
-                    if(paragrafo.equals("")) paragrafo = "No Paragraph";
+                    //if(paragrafo.equals("")) paragrafo = "No Paragraph";
 
                     UrlModel auxUrl = new UrlModel(urlFromRelevant, titulo, paragrafo);
                     out.add(auxUrl);
