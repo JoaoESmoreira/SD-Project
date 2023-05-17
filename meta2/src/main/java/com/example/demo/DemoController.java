@@ -115,7 +115,7 @@ public class DemoController {
         }
     }
 
-    @PostMapping("/list")
+    @GetMapping("/list")
     public String hackerNewsTopStories( Model model) throws RemoteException {
 
         RestTemplate restTemplate = new RestTemplate();
