@@ -22,6 +22,7 @@ public class MyHackerNewsController {
     @Autowired
     private Connection loginService;
 
+    /*
     @GetMapping("/list")
     private List<HackerNewsItemRecord> hackerNewsTopStories() throws RemoteException {
 
@@ -43,5 +44,5 @@ public class MyHackerNewsController {
         return topStories;
 
     }
-
+    */
 }
