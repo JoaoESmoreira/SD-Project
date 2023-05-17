@@ -9,6 +9,7 @@ import org.springframework.remoting.rmi.RmiProxyFactoryBean;
 
 import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
+import java.rmi.registry.Registry;
 import java.rmi.server.UnicastRemoteObject;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -171,6 +172,17 @@ public class SearchModule extends UnicastRemoteObject implements Inter {
 		}
 
 		try {
+			// SearchModule server = new SearchModule();
+
+			// // Specify the IP address of the server machine
+			// String ipAddress = "192.84.13.58";
+
+			// // Specify the port on which the RMI registry is running (default is 1099)
+			// int registryPort = 6000;
+
+			// // Bind the server object to the RMI registry
+			// Registry registry = LocateRegistry.getRegistry(ipAddress, registryPort);
+			// registry.rebind("LoginService", server);
 
 			SearchModule loginService = new SearchModule();
 			LocateRegistry.createRegistry(6000).rebind("LoginService", loginService);

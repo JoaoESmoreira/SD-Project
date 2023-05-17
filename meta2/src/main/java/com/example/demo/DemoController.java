@@ -1,29 +1,35 @@
 package com.example.demo;
 
-import com.example.demo.model.Connection;
-import com.example.demo.model.Search;
-import com.example.demo.model.UrlModel;
-import com.example.demo.model.Loginp;
+import com.example.demo.model.*;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.messaging.Message;
+import org.springframework.messaging.MessageHeaders;
+import org.springframework.messaging.handler.annotation.MessageMapping;
+import org.springframework.messaging.handler.annotation.SendTo;
+import org.springframework.messaging.simp.SimpMessagingTemplate;
+import org.springframework.scheduling.annotation.EnableScheduling;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.util.HtmlUtils;
 
 import java.rmi.RemoteException;
 import java.util.ArrayList;
 
 
 @Controller
+@EnableScheduling
 public class DemoController {
     @Autowired
     private Connection loginService;
-
+/*
     @GetMapping("/")
     public String redirectRoot() {
         return "redirect:/search";
-    }
+    }*/
 
     @GetMapping("/search")
     public String search(Model model) {
@@ -64,13 +70,25 @@ public class DemoController {
 
     @PostMapping("/register-msg")
     public String Register(@ModelAttribute Loginp loginp, Model model) throws RemoteException {
-
-
         String s = loginService.getConnection().Register(loginp.getUsername(),loginp.getPassword());
         model.addAttribute("message", s);
         System.out.println(s);
         return "/register_msg";
+    }
 
+    @MessageMapping("/message")
+    @SendTo("/topic/messages")
+    public String sendMessage(String message) {
+        return "Server says: " + message;
+    }
 
+    @Autowired
+    private SimpMessagingTemplate messagingTemplate;
+    @Scheduled(fixedRate=1000)
+    public void sendPeriodicMessage() throws RemoteException {
+        String destination = "/app/message";
+        String payload = "Hello, client!";
+        System.out.println(loginService.getConnection().Stats());
+        messagingTemplate.convertAndSend(destination, payload);
     }
 }
