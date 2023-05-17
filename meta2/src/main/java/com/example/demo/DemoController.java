@@ -5,6 +5,8 @@ import com.example.demo.model.Search;
 import com.example.demo.model.UrlModel;
 import com.example.demo.model.Loginp;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -13,6 +15,8 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.client.RestTemplate;
 
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.rmi.RemoteException;
 import java.util.ArrayList;
 import java.util.List;
@@ -54,26 +58,30 @@ public class DemoController {
         return "pointed-links-result";
     }
 
-    @GetMapping("/register")
-    public String RegistForm(Model model) {
-        model.addAttribute("Registp", new Loginp());
-        return "register";
-    }
-
     @GetMapping("/login")
     public String loginForm() {
         return "login";
     }
+    @GetMapping("/register")
+    public String RegistForm(Model model) {
+        model.addAttribute("regist", new Loginp());
+        return "register";
+    }
 
-    @PostMapping("/register-msg")
-    public String Register(@ModelAttribute Loginp loginp, Model model) throws RemoteException {
+    @PostMapping("/register-result")
+    public String Register(@ModelAttribute Loginp loginp, Model model) throws IOException {
 
+        FileOutputStream fos = new FileOutputStream("users.txt", true);
+        String str = loginp.getUsername() + ":" + loginp.getPassword() + "\n";
+        fos.write(str.getBytes());
+        fos.close();
 
-        String s = loginService.getConnection().Register(loginp.getUsername(),loginp.getPassword());
-        model.addAttribute("message", s);
-        System.out.println(s);
-        return "/register_msg";
+        WebSecurityConfig securityConfig = new WebSecurityConfig();
+        securityConfig.userDetailsService();
 
+        model.addAttribute("regist", "registed");
+        System.out.println(loginp.getPassword() + " " + loginp.getUsername());
+        return "register_msg";
     }
 
     @GetMapping("/user")
