@@ -2,7 +2,6 @@ package com.example.demo;
 
 import com.example.demo.model.*;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.messaging.Message;
 import org.springframework.messaging.MessageHeaders;
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.handler.annotation.SendTo;
@@ -17,6 +16,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.util.HtmlUtils;
 
 import java.rmi.RemoteException;
+import java.security.Principal;
 import java.util.ArrayList;
 
 
@@ -76,19 +76,22 @@ public class DemoController {
         return "/register_msg";
     }
 
+    @Scheduled(fixedRate=1000)
     @MessageMapping("/message")
     @SendTo("/topic/messages")
-    public String sendMessage(String message) {
-        return "Server says: " + message;
+    public Message onMessage() throws InterruptedException, RemoteException {
+        System.out.println("Message received ");
+        return new Message(loginService.getConnection().Stats());
     }
 
-    @Autowired
-    private SimpMessagingTemplate messagingTemplate;
-    @Scheduled(fixedRate=1000)
-    public void sendPeriodicMessage() throws RemoteException {
-        String destination = "/app/message";
-        String payload = "Hello, client!";
-        System.out.println(loginService.getConnection().Stats());
-        messagingTemplate.convertAndSend(destination, payload);
-    }
+    // @Autowired
+    // private SimpMessagingTemplate messagingTemplate;
+    // @Scheduled(fixedRate=1000)
+    // @MessageMapping("/message2")
+    // public void sendPeriodicMessage() throws RemoteException {
+    //     String destination = "/topic/message";
+    //     String payload = "Hello, client!";
+    //     System.out.println(loginService.getConnection().Stats());
+    //     messagingTemplate.convertAndSend(destination, payload);
+    // }
 }

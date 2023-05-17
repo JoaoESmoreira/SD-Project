@@ -12,4 +12,11 @@ public record Message(String content) {
         System.out.println("here1");
         return sms.toString();
     }*/
+    public Message(String content) {
+        // StringBuilder sms = new StringBuilder();
+        // sms.append(content);
+        // sms.reverse();
+        // this.content = sms.toString();
+        this.content = content;
+    }
 }
