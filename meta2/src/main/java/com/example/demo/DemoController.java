@@ -68,7 +68,7 @@ public class DemoController {
 
     @Autowired
     private SimpMessagingTemplate messagingTemplate;
-    @Scheduled(fixedRate=5000)
+    
     public void sendPeriodicMessage() throws RemoteException {
         String destination = "/topic/messages";
         messagingTemplate.convertAndSend(destination, new Message(loginService.getConnection().Stats()));
@@ -99,14 +99,12 @@ public class DemoController {
             model.addAttribute("stories", submittedStoriesURLS);
             return "user_stories";
         } catch (Exception e) {
-            // Handle the exception and return an appropriate error view
             return "error";
         }
     }
 
     @GetMapping("/list")
     public String hackerNewsTopStories(Model model) throws RemoteException {
-
         RestTemplate restTemplate = new RestTemplate();
 
         String url = "https://hacker-news.firebaseio.com/v0/topstories.json?auth=pretty";
@@ -124,6 +122,5 @@ public class DemoController {
         }
         model.addAttribute("stories", urls);
         return "top10stories";
-
     }
 }
