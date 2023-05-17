@@ -5,6 +5,7 @@ import jakarta.annotation.PostConstruct;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.scheduling.annotation.EnableScheduling;
 
 import java.rmi.NotBoundException;
 import java.rmi.RemoteException;
@@ -12,6 +13,7 @@ import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
 
 @SpringBootApplication
+@EnableScheduling
 public class DemoApplication {
 	@Autowired
 	private Connection loginService;
@@ -22,7 +24,6 @@ public class DemoApplication {
 	public static void main(String[] args) {
 		SpringApplication.run(DemoApplication.class, args);
 	}
-
 
 	@PostConstruct
 	public void init()  {
