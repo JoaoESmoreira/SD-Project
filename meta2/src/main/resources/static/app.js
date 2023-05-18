@@ -21,7 +21,6 @@ function connect() {
         stompClient.subscribe('/topic/messages', function (message) {
             showMessage(JSON.parse(message.body));
         });
-        stompClient.send("/app/message", {});
     });
 }
 
@@ -40,13 +39,3 @@ function sendMessage() {
 function showMessage(message) {
     $("#messages").append("<tr><td>" + message.content + "</td></tr>");
 }
-
-$(function () {
-    $().click(function () { connect();})
-    $("form").on('submit', function (e) {
-        e.preventDefault();
-    });
-    $( "#connect" ).click(function() { connect(); });
-    $( "#disconnect" ).click(function() { disconnect(); });
-    $( "#send" ).click(function() { sendMessage(); });
-});
