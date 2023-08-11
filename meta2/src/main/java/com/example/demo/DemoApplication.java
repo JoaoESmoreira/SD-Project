@@ -22,11 +22,11 @@ public class DemoApplication {
 	private static final String RMI_NAME = "LoginService";
 
 	public static void main(String[] args) {
-		if (args.length != 1) {
-			System.out.println("Wrong number of arguments.");
-			System.exit(0);
-		}
-		RMI_HOST = args[0];
+		// if (args.length != 1) {
+		// 	System.out.println("Wrong number of arguments.");
+		// 	System.exit(0);
+		// }
+		// RMI_HOST = args[0];
 		SpringApplication.run(DemoApplication.class, args);
 	}
 

@@ -68,7 +68,8 @@ public class DemoController {
 
     @Autowired
     private SimpMessagingTemplate messagingTemplate;
-    
+
+    @Scheduled(fixedRate=1000)
     public void sendPeriodicMessage() throws RemoteException {
         String destination = "/topic/messages";
         messagingTemplate.convertAndSend(destination, new Message(loginService.getConnection().Stats()));
