@@ -1,0 +1,136 @@
+package com.example.demo;
+
+import org.jsoup.Connection;
+import org.jsoup.Jsoup;
+import org.jsoup.nodes.Document;
+import org.jsoup.nodes.Element;
+import org.jsoup.select.Elements;
+
+import java.io.IOException;
+import java.net.DatagramPacket;
+import java.net.InetAddress;
+import java.net.MulticastSocket;
+import java.util.StringTokenizer;
+import java.util.concurrent.CopyOnWriteArraySet;
+
+public class Url {
+    public SynchronizedQueue<String> urlQueue;
+    public CopyOnWriteArraySet<Object> urlSet;
+    private int maxLinks;
+
+    public Url() {
+        super();
+        urlQueue = new SynchronizedQueue<>();
+        urlSet = new CopyOnWriteArraySet<>();
+    }
+
+    synchronized public int getSizeUrlSet() { return this.urlSet.size(); }
+    public void addUrl (String url) throws InterruptedException {
+        if (this.maxLinks >= this.urlSet.size()) {
+            int value = getMaxLinks();
+            setMaxLinks(value + 1024);
+            this.urlSet.add(url);
+            this.urlQueue.add(url);
+        } else {
+            setMaxLinks(this.urlSet.size());
+        }
+    }
+
+    synchronized public int getMaxLinks() {
+        return maxLinks;
+    }
+
+    synchronized public void setMaxLinks(int maxLinks) {
+        this.maxLinks = maxLinks;
+    }
+
+    boolean work(MulticastSocket socket, InetAddress group) {
+        String url;
+        String aux;
+        String message;
+        byte[] buffer;
+        DatagramPacket packet;
+
+        try {
+
+            if ((url = urlQueue.pop()) == null) {
+                System.out.println("Null url");
+                return true;
+            }
+
+            Connection connection = Jsoup.connect(url);
+            Document doc = connection.get();
+
+            StringTokenizer tokens = new StringTokenizer(doc.text());
+
+            String title = doc.title();
+            if(title.equals("")){
+                title = "No_title";
+            }
+            message = "Title" + " " + url + " " + title;
+
+            buffer = message.getBytes();
+            int PORT = 4321;
+            packet = new DatagramPacket(buffer, buffer.length, group, PORT);
+            socket.send(packet);
+
+            Element firstParagraph = doc.select("p").first();
+            String text;
+            if (firstParagraph != null) {
+                text = firstParagraph.text();
+                if (text.equals("")) {
+                    text = "No_paragraph";
+                }
+            } else {
+                text = "No_paragraph";
+            }
+            message = "Paragraph" + " " + url + " " + text;
+
+            buffer = message.getBytes();
+            packet = new DatagramPacket(buffer, buffer.length, group, PORT);
+            socket.send(packet);
+
+            int countTokens = 0;
+            String token;
+            while (tokens.hasMoreElements() && countTokens++ < 100) {
+                token = tokens.nextToken().toLowerCase();
+
+                     if(token.equals("")){
+                     token = "No_token";
+                     }
+                     message = "Token" + " " + url + " " + token;
+                     buffer = message.getBytes();
+                     packet = new DatagramPacket(buffer, buffer.length, group, PORT);
+                     socket.send(packet);
+
+            }
+
+            System.out.println("Size: " + urlSet.size() + " Capacity: " + getMaxLinks());
+            System.out.println("Size: " + urlQueue.size());
+            if (getSizeUrlSet() < getMaxLinks()) {
+                Elements links = doc.select("a[href]");
+                for (Element link : links) {
+                    aux = link.attr("abs:href");
+
+                    message = "Url" + " " + url + " " + aux;
+                    buffer = message.getBytes();
+                    packet = new DatagramPacket(buffer, buffer.length, group, PORT);
+                    socket.send(packet);
+
+
+                    if (!urlSet.contains(aux) && (getSizeUrlSet() < getMaxLinks())) {
+                        urlQueue.add(aux);
+                        urlSet.add(aux);
+                    }
+                }
+            }
+        } catch (IOException e) {
+            //System.out.println("IOException Work" + e);
+        } catch (InterruptedException e) {
+            System.out.println("InterruptedException Work");
+        } catch (IllegalArgumentException ie){
+            System.out.println("IllegalArgumentException Work");
+        }
+        return true;
+    }
+}

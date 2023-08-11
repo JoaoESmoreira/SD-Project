@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <title>User Stories Form</title>
+  <link th:href="@{/stylePointedLink.css}" rel="stylesheet" />
+</head>
+<body>
+
+<div class="pointed-style">
+  <form th:action="@{/user-urls}" method="post">
+    <div class="pointed-forms">
+      <h1>Enter HackerNews Username</h1>
+    </div>
+    <div class="pointed-forms">
+      <label for="username">Username:</label>
+      <input type="text" id="username" name="username">
+    </div>
+    <div class="pointed-forms">
+      <button type="submit">Submit</button>
+    </div>
+  </form>
+  <a th:href="@{/search}">Home</a>
+</div>
+</body>
+</html>

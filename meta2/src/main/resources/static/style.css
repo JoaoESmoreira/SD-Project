@@ -1,0 +1,35 @@
+body{
+    /*background: #9580ff;*/
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+.search-div {
+    padding: 180px;
+    padding-bottom: 90px;
+}
+.search-div h1 {
+    font-size: 100px;
+}
+.search-div input {
+    width: 600px;
+    height: 20px;
+}
+.search-div form {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    align-items: center;
+}
+.search-div button {
+    margin: 10px;
+}
+
+.search-buttoms {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-around;
+    gap: 10px;
+}

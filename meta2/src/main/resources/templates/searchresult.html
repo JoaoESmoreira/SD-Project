@@ -1,0 +1,33 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <title>Getting Started: Serving Web Content</title>
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+  <link href="/style.css" rel="stylesheet">
+</head>
+  <body>
+    <table>
+      <thead>
+      <tr>
+        <td><b>URL</b></td>
+        <td><b>TITLE</b></td>
+        <td><b>PARAGRAPH</b></td>
+      </tr>
+      </thead>
+      <tbody>
+      <tr
+              th:each="url, iStat : ${search}"
+              th:style="${iStat.odd}? 'font-weight: bold;'"
+      >
+        <td  th:text="${url.url}"></td>
+        <td th:text="${url.title}"></td>
+        <td th:text="${url.paragraph}"></td>
+      </tr>
+      </tbody>
+    </table>
+
+    <a th:href="@{/search}">Get back</a><br>
+
+
+  </body>
+</html>
